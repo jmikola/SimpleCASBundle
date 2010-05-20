@@ -1,0 +1,1 @@
+[SimpleCAS](http://code.google.com/p/simplecas/) integration for authenticating users in [Symfony 2](http://github.com/symfony/symfony).
