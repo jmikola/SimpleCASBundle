@@ -21,7 +21,6 @@ not handle the dependency on its own.
 
 Add SimpleCASBundle to the `registerBundles()` method of your application kernel:
 
-    [php]
     public function registerBundles()
     {
         return array(
@@ -34,7 +33,6 @@ Add SimpleCASBundle to the `registerBundles()` method of your application kernel
 Since this bundle depends on PEAR libraries, add their prefixes to either the
 root or project-level `autoload.php` file:
 
-    [php]
     $loader->registerPrefixes(array(
         'HTTP_'      => '/usr/share/php',
         'SimpleCAS_' => '/usr/share/php',
