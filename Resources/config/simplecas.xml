@@ -1,0 +1,38 @@
+<container xmlns="http://www.symfony-project.org/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.symfony-project.org/schema/dic/services http://www.symfony-project.org/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="simplecas.class">SimpleCAS</parameter>
+        <parameter key="simplecas.protocol.class">SimpleCAS_Protocol_Version2</parameter>
+        <parameter key="simplecas.protocol.request.class">HTTP_Request2</parameter>
+        
+        <parameter key="simplecas.protocol.hostname">localhost:8443</parameter>
+        <parameter key="simplecas.protocol.uri">cas</parameter>
+        <parameter key="simplecas.protocol.request.method">GET</parameter>
+        <parameter key="simplecas.protocol.request.config" type="collection" />
+    </parameters>
+
+    <services>
+        <service id="simplecas" class="%simplecas.class%" constructor="client">
+            <argument type="service" id="simplecas.protocol" />
+        </service>
+
+        <service id="simplecas.protocol" class="%simplecas.protocol.class%">
+            <argument type="collection">
+                <argument key="username">%simplecas.protocol.hostname%</argument>
+                <argument key="password">%simplecas.protocol.uri%</argument>
+            </argument>
+            <call method="setRequest">
+                <argument type="service" id="simplecas.protocol.request" />
+            </call>
+        </service>
+
+        <service id="simplecas.protocol.request" class="%simplecas.protocol.request.class%">
+            <argument>null</argument>
+            <argument>%simplecas.protocol.request.method%</argument>
+            <argument type="collection">%simplecas.protocol.request.config%</argument>
+        </service>
+    </services>
+
+</container>
