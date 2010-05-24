@@ -21,8 +21,8 @@
 
         <service id="simplecas.protocol" class="%simplecas.protocol.class%">
             <argument type="collection">
-                <argument key="username">%simplecas.protocol.hostname%</argument>
-                <argument key="password">%simplecas.protocol.uri%</argument>
+                <argument key="hostname">%simplecas.protocol.hostname%</argument>
+                <argument key="uri">%simplecas.protocol.uri%</argument>
             </argument>
             <call method="setRequest">
                 <argument type="service" id="simplecas.protocol.request" />
