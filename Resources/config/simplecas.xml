@@ -31,7 +31,7 @@
         <service id="simplecas.protocol.request" class="%simplecas.protocol.request.class%">
             <argument>null</argument>
             <argument>%simplecas.protocol.request.method%</argument>
-            <argument type="collection">%simplecas.protocol.request.config%</argument>
+            <argument>%simplecas.protocol.request.config%</argument>
         </service>
     </services>
 

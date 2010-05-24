@@ -36,8 +36,12 @@ class SimpleCASExtension extends LoaderExtension
             }
         }
 
-        if (isset($config['protocol']['request']['config'])) {
-            $configuration->setParameter('simplecas.protocol.request.config', $config['protocol']['request']['config']);
+        if (isset($config['protocol']['request'])) {
+            foreach (array('method', 'config') as $key) {
+                if (isset($config['protocol']['request'][$key])) {
+                    $configuration->setParameter('simplecas.protocol.request.'.$key, $config['protocol']['request'][$key]);
+                }
+            }
         }
 
         return $configuration;
