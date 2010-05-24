@@ -3,7 +3,7 @@
     xsi:schemaLocation="http://www.symfony-project.org/schema/dic/services http://www.symfony-project.org/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="simplecas.class">SimpleCAS</parameter>
+        <parameter key="simplecas.class">Bundle\SimpleCASBundle\SimpleCAS</parameter>
         <parameter key="simplecas.protocol.class">SimpleCAS_Protocol_Version2</parameter>
         <parameter key="simplecas.protocol.request.class">HTTP_Request2</parameter>
         
@@ -16,6 +16,7 @@
     <services>
         <service id="simplecas" class="%simplecas.class%" constructor="client">
             <argument type="service" id="simplecas.protocol" />
+            <argument type="service" id="user" />
         </service>
 
         <service id="simplecas.protocol" class="%simplecas.protocol.class%">
