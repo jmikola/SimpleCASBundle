@@ -48,7 +48,7 @@ class SimpleCAS
     /**
      * Is user authenticated?
      *
-     * @var bool
+     * @var boolean
      */
     protected $authenticated = false;
 
@@ -101,7 +101,7 @@ class SimpleCAS
      * is marked as authenticated.
      *
      * @param string $ticket Ticket from the CAS Server
-     * @return bool
+     * @return boolean
      */
     protected function validateTicket($ticket)
     {
@@ -155,7 +155,7 @@ class SimpleCAS
     /**
      * Check if this user has been authenticated or not.
      *
-     * @return bool
+     * @return boolean
      */
     public function isAuthenticated()
     {
