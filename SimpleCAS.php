@@ -43,14 +43,14 @@ class SimpleCAS
      *
      * @var Symfony\Framework\WebBundle\User
      */
-    private $_user;
+    protected $user;
 
     /**
      * Is user authenticated?
      *
      * @var bool
      */
-    private $_authenticated = false;
+    protected $authenticated = false;
 
     /**
      * Protocol for the server running the CAS service.
@@ -90,13 +90,13 @@ class SimpleCAS
             }
         }
 
-        $this->_user = $user;
+        $this->user = $user;
 
-        if ($this->_user->getAttribute(self::TICKET)) {
-            $this->_authenticated = true;
+        if ($this->user->getAttribute(self::TICKET)) {
+            $this->authenticated = true;
         }
 
-        if ($this->_authenticated == false && isset($_GET['ticket'])) {
+        if ($this->authenticated == false && isset($_GET['ticket'])) {
             $this->validateTicket($_GET['ticket']);
         }
     }
@@ -128,9 +128,9 @@ class SimpleCAS
      */
     protected function setAuthenticated($uid)
     {
-        $this->_user->setAttribute(self::TICKET, true);
-        $this->_user->setAttribute(self::UID, $uid);
-        $this->_authenticated = true;
+        $this->user->setAttribute(self::TICKET, true);
+        $this->user->setAttribute(self::UID, $uid);
+        $this->authenticated = true;
     }
 
     /**
@@ -140,7 +140,7 @@ class SimpleCAS
      */
     public function getUsername()
     {
-        return $this->_user->getAttribute(static::UID);
+        return $this->user->getAttribute(static::UID);
     }
 
     /**
@@ -165,7 +165,7 @@ class SimpleCAS
      */
     public function isAuthenticated()
     {
-        return $this->_authenticated;
+        return $this->authenticated;
     }
 
     /**
@@ -178,8 +178,8 @@ class SimpleCAS
      */
     public function logout($url = '')
     {
-        $this->_user->removeAttribute(self::TICKET);
-        $this->_user->removeAttribute(self::UID);
+        $this->user->removeAttribute(self::TICKET);
+        $this->user->removeAttribute(self::UID);
 
         if (empty($url)) {
             $url = self::getURL();
