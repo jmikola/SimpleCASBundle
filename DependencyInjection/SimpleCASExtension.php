@@ -30,9 +30,9 @@ class SimpleCASExtension extends LoaderExtension
         $loader = new XmlFileLoader(__DIR__.'/../Resources/config');
         $configuration->merge($loader->load($this->resources['simplecas']));
 
-        foreach (array('redirect_route', 'redirect_url') as $key) {
-            if (isset($config['login'][$key])) {
-                $configuration->setParameter('simplecas.login.'.$key, $config['login'][$key]);
+        foreach (array('login_redirect_route', 'login_redirect_url') as $key) {
+            if (isset($config[$key])) {
+                $configuration->setParameter('simplecas.'.$key, $config[$key]);
             }
         }
 
