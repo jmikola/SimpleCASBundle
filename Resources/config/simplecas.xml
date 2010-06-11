@@ -16,7 +16,7 @@
     </parameters>
 
     <services>
-        <service id="simplecas" class="%simplecas.class%" constructor="client">
+        <service id="simplecas" class="%simplecas.class%">
             <argument type="service" id="simplecas.protocol" />
             <argument type="service" id="user" />
         </service>
