@@ -7,8 +7,10 @@ use Symfony\Framework\WebBundle\User;
 /**
  * This is a CAS client authentication library for PHP 5.
  *
- * This is a drop-in replacement for the package \SimpleCAS class, which
- * provides support for Symfony 2 sessions.
+ * This is a replacement for the \SimpleCAS class, which adds support for
+ * Symfony's User session service.  The singleton interface has also been
+ * removed in favor of shared service management by Symfony's dependency
+ * injection container.
  *
  * @category  Authentication
  * @package   SimpleCAS
@@ -35,13 +37,6 @@ class SimpleCAS
      * Session attribute for the CAS principal identifier.
      */
     const UID = '__SIMPLECAS_UID';
-
-    /**
-     * Singleton CAS object
-     *
-     * @var SimpleCAS
-     */
-    static private $_instance;
 
     /**
      * User session service.
@@ -83,8 +78,9 @@ class SimpleCAS
      *
      * @param \SimpleCAS_Protocol              $protocol Protocol to use for authentication.
      * @param Symfony\Framework\WebBundle\User $user     User session service
+     * @return SimpleCAS
      */
-    private function __construct(\SimpleCAS_Protocol $protocol, User $user)
+    public function __construct(\SimpleCAS_Protocol $protocol, User $user)
     {
         $this->protocol = $protocol;
 
@@ -145,22 +141,6 @@ class SimpleCAS
     public function getUsername()
     {
         return $this->_user->getAttribute(static::UID);
-    }
-
-    /**
-     * Singleton interface, returns CAS object.
-     *
-     * @param \SimpleCAS_Protocol              $server CAS Server object
-     * @param Symfony\Framework\WebBundle\User $user   User session service
-     * @return SimpleCAS
-     */
-    static public function client(\SimpleCAS_Protocol $protocol, User $user)
-    {
-        if (!isset(self::$_instance)) {
-            self::$_instance = new self($protocol, $user);
-        }
-
-        return self::$_instance;
     }
 
     /**
