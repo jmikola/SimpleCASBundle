@@ -60,13 +60,6 @@ class SimpleCAS
     protected $protocol;
 
     /**
-     * User's login name if authenticated.
-     *
-     * @var string
-     */
-    protected $username;
-
-    /**
      * (Optional) alternative service URL to return to after CAS authentication.
      *
      * @var string
