@@ -155,6 +155,7 @@ class SimpleCAS
         if (!$this->isAuthenticated()) {
             self::redirect($this->protocol->getLoginURL(self::getURL()));
         }
+
         return $this;
     }
 
@@ -184,6 +185,7 @@ class SimpleCAS
         if (empty($url)) {
             $url = self::getURL();
         }
+
         $this->redirect($this->protocol->getLogoutURL($url));
     }
 
@@ -197,9 +199,8 @@ class SimpleCAS
         if (!empty(self::$url)) {
             return self::$url;
         }
-        if (isset($_SERVER['HTTPS'])
-        && !empty($_SERVER['HTTPS'])
-        && $_SERVER['HTTPS'] == 'on') {
+
+        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
             $protocol = 'https';
         } else {
             $protocol = 'http';
@@ -214,8 +215,7 @@ class SimpleCAS
                               '/\?&/'             => '?',
                               '/\?$/'             => '');
 
-        $url = preg_replace(array_keys($replacements),
-        array_values($replacements), $url);
+        $url = preg_replace(array_keys($replacements), array_values($replacements), $url);
 
         return $url;
     }
@@ -224,8 +224,6 @@ class SimpleCAS
      * Set an alternative return URL
      *
      * @param string $url alternative return URL
-     *
-     * @return void
      */
     static public function setURL($url)
     {
@@ -236,8 +234,6 @@ class SimpleCAS
      * Send a header to redirect the client to another URL.
      *
      * @param string $url URL to redirect the client to.
-     *
-     * @return void
      */
     static public function redirect($url)
     {
