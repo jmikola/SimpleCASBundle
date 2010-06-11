@@ -117,7 +117,7 @@ class SimpleCAS
     /**
      * Marks the current session as authenticated.
      *
-     * @param string $uid User name returned by the CAS server.
+     * @param string $uid User identifier returned by the CAS server.
      */
     protected function setAuthenticated($uid)
     {
@@ -127,7 +127,7 @@ class SimpleCAS
     }
 
     /**
-     * Return the authenticated user's login name.
+     * Return the authenticated user's identifier.
      *
      * @return string
      */
@@ -167,8 +167,6 @@ class SimpleCAS
      * url.
      *
      * @param string $url URL to provide the client on logout.
-     *
-     * @return void
      */
     public function logout($url = '')
     {
