@@ -131,7 +131,7 @@ class SimpleCAS
      *
      * @return string
      */
-    public function getUsername()
+    public function getAuthenticatedUid()
     {
         return $this->user->getAttribute(static::UID);
     }
