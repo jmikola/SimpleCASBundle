@@ -119,7 +119,7 @@ class SimpleCAS
 	 *
 	 * @param string $uid User identifier returned by the CAS server.
 	 */
-	protected function setAuthenticated($uid)
+	public function setAuthenticated($uid)
 	{
 		$this->user->setAttribute(self::TICKET, true);
 		$this->user->setAttribute(self::UID, $uid);
