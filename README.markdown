@@ -8,13 +8,15 @@ authenticated against a [CAS server](http://www.jasig.org/cas).
 
 ### PEAR Dependencies
 
-This bundle depends on SimpleCAS, which is installable via PEAR:
+This bundle depends on SimpleCAS, which can be installed via PEAR:
 
     $ pear channel-discover simplecas.googlecode.com/svn
     $ pear install simplecas/SimpleCAS-alpha
 
 SimpleCAS depends on [HTTP_Request2](http://pear.php.net/package/HTTP_Request2),
-so you may have to install that if PEAR does not handle the dependency on its own.
+which itself depends on [Net_URL2](http://pear.php.net/package/Net_URL2).  You
+may have to install these packages manually if PEAR does not handle the dependency
+on its own.
 
 ### Application Kernel
 
@@ -29,19 +31,22 @@ Add SimpleCASBundle to the `registerBundles()` method of your application kernel
 
 ### Class Autoloading
 
-Since this bundle depends on PEAR libraries, add their prefixes to either the
-root or project-level `autoload.php` file:
+Since this bundle depends on PEAR libraries for dependency injection, their
+prefixes should be added to the project-level `autoload.php` file:
 
     $loader->registerPrefixes(array(
         'HTTP_'      => '/usr/share/php',
         'SimpleCAS_' => '/usr/share/php',
-        'SimpleCAS'  => '/usr/share/php',
     ));
 
-The above example assumes that the PEAR libraries were installed to `/usr/share/php`
-and may need to be modified.  At present, `UniversalClassLoader` does not support
-autoloading of files within PHP's include path, so the PEAR path must be explicitly
-defined.
+The above example assumes that the PEAR libraries were installed to `/usr/share/php`.
+It may be more convenient to place these libraries in the `vendor/` path of your
+project:
+
+    $loader->registerPrefixes(array(
+        'HTTP_'      => __DIR__ . '/vendor/pear',
+        'SimpleCAS_' => __DIR__ . '/vendor/simplecas',
+    ));
 
 ## Configuration
 
@@ -57,7 +62,7 @@ An example of more specific configuration follows:
 
     simplecas.simplecas:
       protocol:
-        hostname: localhost:8443
+        hostname: cas-server.example.com:8443
         uri:      cas
         request:
           method: GET
