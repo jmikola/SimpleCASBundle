@@ -2,46 +2,43 @@
 
 namespace Bundle\SimpleCASBundle;
 
+use Symfony\Components\HttpKernel\Request;
 use Symfony\Framework\WebBundle\User;
 
 /**
- * This is a CAS client authentication library for PHP 5.
+ * Client class for authenticating users against a CAS server using SimpleCAS.
  *
- * This is a replacement for the \SimpleCAS class, which adds support for
- * Symfony's User session service.  The singleton interface has also been
- * removed in favor of shared service management by Symfony's dependency
- * injection container.
+ * This is a replacement for the \SimpleCAS class that ships with the SimpleCAS
+ * library.  It implements a friendly interface for controller actions and
+ * integrates with Symfony's dependency injection container.
  *
- * @category  Authentication
- * @package   SimpleCAS
- * @author    Brett Bieber <brett.bieber@gmail.com>
- * @copyright 2008 Regents of the University of Nebraska
- * @license   http://www1.unl.edu/wdn/wiki/Software_License BSD License
- * @link      http://code.google.com/p/simplecas/
- *
- * @author    Jeremy Mikola <jmikola@gmail.com>
+ * @author Jeremy Mikola <jmikola@gmail.com>
  */
 class SimpleCAS
 {
-    /**
-     * Version of the CAS library.
-     */
-    const VERSION = '0.0.1';
-
-    /**
-     * Session attribute for the CAS ticket.
-     */
-    const TICKET = '__SIMPLECAS_TICKET';
-
     /**
      * Session attribute for the CAS principal identifier.
      */
     const UID = '__SIMPLECAS_UID';
 
     /**
+     * CAS service protocol.
+     *
+     * @var \SimpleCAS_Protocol
+     */
+    protected $protocol;
+
+    /**
+     * HTTP request object.
+     *
+     * @var \Symfony\Components\HttpKernel\Request
+     */
+    protected $request;
+
+    /**
      * User session service.
      *
-     * @var Symfony\Framework\WebBundle\User
+     * @var \Symfony\Framework\WebBundle\User
      */
     protected $user;
 
@@ -53,107 +50,49 @@ class SimpleCAS
     protected $authenticated = false;
 
     /**
-     * Protocol for the server running the CAS service.
-     *
-     * @var \SimpleCAS_Protocol
-     */
-    protected $protocol;
-
-    /**
-     * (Optional) alternative service URL to return to after CAS authentication.
-     *
-     * @var string
-     */
-    static protected $url;
-
-    /**
      * Construct a CAS client object.
      *
-     * @param \SimpleCAS_Protocol              $protocol Protocol to use for authentication.
-     * @param Symfony\Framework\WebBundle\User $user     User session service
+     * If the session contains a CAS principal identifier, the current session
+     * will be considered authenticated.
+     *
+     * @param \SimpleCAS_Protocol                    $protocol
+     * @param \Symfony\Framework\WebBundle\User      $user
+     * @param \Symfony\Components\HttpKernel\Request $request
      * @return SimpleCAS
      */
-    public function __construct(\SimpleCAS_Protocol $protocol, User $user)
+    public function __construct(\SimpleCAS_Protocol $protocol, Request $request, User $user)
     {
         $this->protocol = $protocol;
-
-        if ($this->protocol instanceof \SimpleCAS_SingleSignOut && isset($_POST)) {
-            if ($ticket = $this->protocol->validateLogoutRequest($_POST)) {
-                $this->logout($ticket);
-            }
-        }
-
+        $this->request = $request;
         $this->user = $user;
 
-        if ($this->user->getAttribute(self::TICKET)) {
+        if ($this->user->getAttribute(self::UID)) {
             $this->authenticated = true;
-        }
-
-        if ($this->authenticated == false && isset($_GET['ticket'])) {
-            $this->validateTicket($_GET['ticket']);
         }
     }
 
     /**
-     * Checks a ticket to see if it is valid.
+     * Validate a CAS sign-on ticket.
      *
-     * If the CAS server verifies the ticket, a session is created and the user
-     * is marked as authenticated.
+     * Attempt to authenticate the current session by verifying the ticket
+     * against the CAS server and return whether the user is now authenticated.
      *
-     * @param string $ticket Ticket from the CAS Server
+     * @param string $ticket
      * @return boolean
      */
-    protected function validateTicket($ticket)
+    public function validateTicket($ticket)
     {
         if ($uid = $this->protocol->validateTicket($ticket, self::getURL())) {
             $this->setAuthenticated($uid);
-            $this->redirect(self::getURL());
             return true;
         } else {
+            $this->removeAuthentication();
             return false;
         }
     }
 
     /**
-     * Marks the current session as authenticated.
-     *
-     * @param string $uid User identifier returned by the CAS server.
-     */
-    public function setAuthenticated($uid)
-    {
-        $this->user->setAttribute(self::TICKET, true);
-        $this->user->setAttribute(self::UID, $uid);
-        $this->authenticated = true;
-    }
-
-    /**
-     * Return the authenticated user's identifier.
-     *
-     * @return string
-     */
-    public function getAuthenticatedUid()
-    {
-        return $this->user->getAttribute(static::UID);
-    }
-
-    /**
-     * If client is not authenticated, this will redirect to login and exit.
-     *
-     * Otherwise, return the CAS object.
-     *
-     * @return SimpleCAS
-     */
-    public function forceAuthentication()
-    {
-        if (!$this->isAuthenticated()) {
-            self::redirect($this->protocol->getLoginURL(self::getURL()));
-        }
-
-        return $this;
-    }
-
-    /**
-     * Check if this user has been authenticated or not.
+     * Check if the current session is authenticated.
      *
      * @return boolean
      */
@@ -163,85 +102,124 @@ class SimpleCAS
     }
 
     /**
-     * Destroys session data for this client, redirects to the server logout
-     * url.
+     * Return the authenticated user's principal identifier.
      *
-     * @param string $url URL to provide the client on logout.
+     * @return string
      */
-    public function logout($url = '', $redirect = false)
+    public function getAuthenticatedUid()
     {
-        $this->user->removeAttribute(self::TICKET);
-        $this->user->removeAttribute(self::UID);
-        if ($redirect) {
-            if (empty($url)) {
-                $url = self::getURL();
-            }
-
-            $this->redirect($this->protocol->getLogoutURL($url));
-        }
+        return $this->user->getAttribute(static::UID);
     }
 
     /**
-     * Returns the current URL without CAS affecting parameters.
+     * Marks the current session as authenticated.
+     *
+     * This method may be used to force the authentication state of the user
+     * without requiring validation against the CAS server.
+     *
+     * @param string $uid Principal identifier for the authenticated user
+     * @return SimpleCAS
+     */
+    public function setAuthenticatedUid($uid)
+    {
+        $this->user->setAttribute(self::UID, $uid);
+        $this->authenticated = true;
+        return $this;
+    }
+
+    /**
+     * Marks the current session as unauthenticated.
+     *
+     * @return SimpleCAS
+     */
+    public function removeAuthentication()
+    {
+        $this->user->removeAttribute(self::UID);
+        $this->authenticated = false;
+        return $this;
+    }
+
+    /**
+     * Force authentication for the current user.
+     *
+     * Redirect to the CAS server's login URL if the current user is not
+     * authenticated.  Otherwise, return this CAS client object.
+     *
+     * @return SimpleCAS
+     */
+    public function forceAuthentication()
+    {
+        if (!$this->isAuthenticated()) {
+            $this->redirect($this->getLoginUrl());
+        }
+        return $this;
+    }
+
+    /**
+     * Return the CAS server's login URL.
+     *
+     * The service URL is optional and will default to the current URL.
+     *
+     * @param string $url
+     * @return string
+     */
+    public function getLoginUrl($url = null)
+    {
+        return $this->protocol->getLoginURL($url ?: $this->getCurrentUrl());
+    }
+
+    /**
+     * Return the CAS server's logout URL.
+     *
+     * The service URL is optional and will default to the current URL.
+     *
+     * The $useServiceRedirect parameter enables followServiceRedirects support,
+     * which allows a properly configured LogoutController on the CAS server to
+     * immediately redirect to a service URL after expiring the user's session.
+     *
+     * @param string  $url
+     * @param boolean $useServiceRedirect
+     * @return string
+     */
+    public function getLogoutUrl($url = null, $useServiceRedirect = false)
+    {
+        // TODO: Refactor once SimpleCAS_Protocol supports followServiceRedirects
+        $logoutUrl = $this->protocol->getLogoutURL($url ?: $this->getCurrentUrl());
+
+        if ($useServiceRedirect) {
+            $logoutUrl = str_replace('logout?url=', 'logout?service=', $logoutUrl);
+        }
+
+        return $logoutUrl;
+    }
+
+    /**
+     * Returns the current URL without CAS-affecting parameters.
      *
      * @return string url
      */
-    static public function getURL()
+    public function getCurrentURL()
     {
-        if (!empty(self::$url)) {
-            return self::$url;
-        }
-
-        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
-            $protocol = 'https';
-        } else {
-            $protocol = 'http';
-        }
-
-        $url = $protocol.'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
-
         $replacements = array(
             '/\?logout/'        => '',
             '/&ticket=[^&]*/'   => '',
             '/\?ticket=[^&;]*/' => '?',
             '/\?%26/'           => '?',
             '/\?&/'             => '?',
-            '/\?$/'             => ''
+            '/\?$/'             => '',
         );
-
-        $url = preg_replace(array_keys($replacements), array_values($replacements), $url);
-
-        return $url;
+        return preg_replace(array_keys($replacements), array_values($replacements), $this->request->getUri());
     }
 
     /**
-     * Set an alternative return URL
+     * Redirect the client to another URL.
      *
-     * @param string $url alternative return URL
+     * @param string $url
      */
-    static public function setURL($url)
+    protected function redirect($url)
     {
-        self::$url = $url;
-    }
-
-    /**
-     * Send a header to redirect the client to another URL.
-     *
-     * @param string $url URL to redirect the client to.
-     */
-    static public function redirect($url)
-    {
-        header("Location: $url");
+        // TODO: Refactor once Symfony supports redirect exceptions
+        header('Location: ' . $url);
         exit();
-    }
-
-    /**
-     * Get the version of the CAS library
-     *
-     * @return string
-     */
-    static public function getVersion()
-    {
-        return self::VERSION;
     }
 }
