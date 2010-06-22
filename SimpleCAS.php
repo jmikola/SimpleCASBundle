@@ -31,14 +31,14 @@ class SimpleCAS
     /**
      * HTTP request object.
      *
-     * @var \Symfony\Components\HttpKernel\Request
+     * @var Symfony\Components\HttpKernel\Request
      */
     protected $request;
 
     /**
      * User session service.
      *
-     * @var \Symfony\Framework\WebBundle\User
+     * @var Symfony\Framework\WebBundle\User
      */
     protected $user;
 
@@ -50,14 +50,18 @@ class SimpleCAS
     protected $authenticated = false;
 
     /**
+     * Default
+     */
+
+    /**
      * Construct a CAS client object.
      *
      * If the session contains a CAS principal identifier, the current session
      * will be considered authenticated.
      *
-     * @param \SimpleCAS_Protocol                    $protocol
-     * @param \Symfony\Framework\WebBundle\User      $user
-     * @param \Symfony\Components\HttpKernel\Request $request
+     * @param \SimpleCAS_Protocol                   $protocol
+     * @param Symfony\Components\HttpKernel\Request $request
+     * @param Symfony\Framework\WebBundle\User      $user
      * @return SimpleCAS
      */
     public function __construct(\SimpleCAS_Protocol $protocol, Request $request, User $user)
@@ -140,17 +144,33 @@ class SimpleCAS
     }
 
     /**
-     * Force authentication for the current user.
+     * Require authentication for the current user.
      *
      * Redirect to the CAS server's login URL if the current user is not
      * authenticated.  Otherwise, return this CAS client object.
      *
      * @return SimpleCAS
      */
-    public function forceAuthentication()
+    public function requireLogin()
     {
-        if (!$this->isAuthenticated()) {
+        if (!$this->authenticated) {
             $this->redirect($this->getLoginUrl());
+        }
+        return $this;
+    }
+
+    /**
+     * Force the current user to logout if currently authenticated.
+     *
+     * Redirect to the CAS server's logout URL if the current user is
+     * authenticated.  Otherwise, return this CAS client object.
+     *
+     * @return SimpleCAS
+     */
+    public function requireLogout()
+    {
+        if ($this->authenticated) {
+            $this->removeAuthentication()->redirect($this->getLogoutUrl());
         }
         return $this;
     }
@@ -173,24 +193,12 @@ class SimpleCAS
      *
      * The service URL is optional and will default to the current URL.
      *
-     * The $useServiceRedirect parameter enables followServiceRedirects support,
-     * which allows a properly configured LogoutController on the CAS server to
-     * immediately redirect to a service URL after expiring the user's session.
-     *
-     * @param string  $url
-     * @param boolean $useServiceRedirect
+     * @param string $url
      * @return string
      */
-    public function getLogoutUrl($url = null, $useServiceRedirect = false)
+    public function getLogoutUrl($url = null)
     {
-        // TODO: Refactor once SimpleCAS_Protocol supports followServiceRedirects
-        $logoutUrl = $this->protocol->getLogoutURL($url ?: $this->getCurrentUrl());
-
-        if ($useServiceRedirect) {
-            $logoutUrl = str_replace('logout?url=', 'logout?service=', $logoutUrl);
-        }
-
-        return $logoutUrl;
+        return $this->protocol->getLogoutURL($url ?: $this->getCurrentUrl());
     }
 
     /**
