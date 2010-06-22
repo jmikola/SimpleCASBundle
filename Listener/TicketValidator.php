@@ -2,11 +2,11 @@
 
 namespace Bundle\SimpleCASBundle\Listener;
 
+use Symfony\Components\DependencyInjection\ContainerInterface;
 use Symfony\Components\HttpKernel\HttpKernelInterface;
 use Symfony\Components\HttpKernel\LoggerInterface;
 use Symfony\Components\EventDispatcher\EventDispatcher;
 use Symfony\Components\EventDispatcher\Event;
-use Bundle\SimpleCASBundle\SimpleCAS;
 
 /**
  * TicketValidator listens to the core.request event and validates a CAS ticket
@@ -18,11 +18,12 @@ class TicketValidator
 {
     const TICKET = 'ticket';
 
-    protected $simplecas;
+    protected $container;
+    protected $logger;
 
-    public function __construct(SimpleCAS $simplecas, LoggerInterface $logger)
+    public function __construct(ContainerInterface $container, LoggerInterface $logger = null)
     {
-        $this->simplecas = $simplecas;
+        $this->container = $container;
         $this->logger = $logger;
     }
 
@@ -47,16 +48,19 @@ class TicketValidator
             return;
         }
 
-        $request = $event->getParameter('request');
+        if ($this->container->hasService('simplecas')) {
+            $simplecas = $this->container->hasService('simplecas');
+            $request = $event->getParameter('request');
 
-        if ($ticket = $request->query->get(self::TICKET)) {
-            if ($this->simplecas->validateTicket($ticket)) {
-                if (null !== $this->logger) {
-                    $this->logger->info(sprintf('Validated CAS ticket for principal identifier "%s"', $this->simplecas->getAuthenticatedUid()));
-                }
-            } else {
-                if (null !== $this->logger) {
-                    $this->logger->err(sprintf('Invalid CAS ticket "%s" for request: %s', $request->getPathInfo()));
+            if ($ticket = $request->query->get(self::TICKET)) {
+                if ($this->simplecas->validateTicket($ticket)) {
+                    if (null !== $this->logger) {
+                        $this->logger->info(sprintf('Validated CAS ticket for principal identifier "%s"', $this->simplecas->getAuthenticatedUid()));
+                    }
+                } else {
+                    if (null !== $this->logger) {
+                        $this->logger->err(sprintf('Invalid CAS ticket "%s" for request: %s', $request->getPathInfo()));
+                    }
                 }
             }
         }
