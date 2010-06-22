@@ -20,23 +20,17 @@ class SimpleCASExtension extends LoaderExtension
     /**
      * Load the SimpleCAS configuration.
      *
-     * @param array $config A configuration array
-     * @return BuilderConfiguration A BuilderConfiguration instance
+     * @param array                $config        A configuration array
+     * @param BuilderConfiguration $configuration A BuilderConfiguration instance
      */
-    public function simplecasLoad($config)
+    public function simplecasLoad($config, BuilderConfiguration $configuration)
     {
-        $configuration = new BuilderConfiguration();
-
-        $loader = new XmlFileLoader(__DIR__.'/../Resources/config');
-        $configuration->merge($loader->load($this->resources['simplecas']));
-
-        foreach (array('login_redirect_route', 'login_redirect_url') as $key) {
-            if (isset($config[$key])) {
-                $configuration->setParameter('simplecas.'.$key, $config[$key]);
-            }
+        if (!$configuration->hasDefinition('simplecas')) {
+            $loader = new XmlFileLoader(__DIR__.'/../Resources/config');
+            $configuration->merge($loader->load($this->resources['simplecas']));
         }
 
-        foreach (array('hostname', 'uri') as $key) {
+        foreach (array('hostname', 'uri', 'logout_service_redirect') as $key) {
             if (isset($config['protocol'][$key])) {
                 $configuration->setParameter('simplecas.protocol.'.$key, $config['protocol'][$key]);
             }
@@ -54,28 +48,6 @@ class SimpleCASExtension extends LoaderExtension
     }
 
     /**
-     * Returns the recommended alias to use in XML.
-     *
-     * This alias is also the mandatory prefix to use when using YAML.
-     *
-     * @return string The alias
-     */
-    public function getAlias()
-    {
-        return 'simplecas';
-    }
-
-    /**
-     * Returns the namespace to be used for this extension (XML namespace).
-     *
-     * @return string The XML namespace
-     */
-    public function getNamespace()
-    {
-        return 'http://www.symfony-project.org/schema/dic/simplecas';
-    }
-
-    /**
      * Returns the base path for the XSD files.
      *
      * @return string The XSD base path
@@ -83,5 +55,15 @@ class SimpleCASExtension extends LoaderExtension
     public function getXsdValidationBasePath()
     {
         return __DIR__.'/../Resources/config/';
+    }
+
+    public function getNamespace()
+    {
+        return 'http://www.symfony-project.org/schema/dic/simplecas';
+    }
+
+    public function getAlias()
+    {
+        return 'simplecas';
     }
 }
