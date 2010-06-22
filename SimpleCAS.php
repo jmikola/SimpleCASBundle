@@ -58,10 +58,6 @@ class SimpleCAS
     protected $authenticated = false;
 
     /**
-     * Default
-     */
-
-    /**
      * Construct a CAS client object.
      *
      * If the session contains a CAS principal identifier, the current session
@@ -122,7 +118,7 @@ class SimpleCAS
      */
     public function getAuthenticatedUid()
     {
-        return $this->user->getAttribute(static::UID);
+        return $this->user->getAttribute(self::UID);
     }
 
     /**
