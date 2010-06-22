@@ -2,6 +2,7 @@
 
 namespace Bundle\SimpleCASBundle;
 
+use Bundle\SimpleCASBundle\Adapter\Adapter;
 use Symfony\Components\HttpKernel\Request;
 use Symfony\Framework\WebBundle\User;
 
@@ -43,6 +44,13 @@ class SimpleCAS
     protected $user;
 
     /**
+     * Database adapter.
+     *
+     * @var Bundle\SimpleCASBundle\Adapter\Adapter
+     */
+    protected $adapter;
+
+    /**
      * Is user authenticated?
      *
      * @var boolean
@@ -59,16 +67,18 @@ class SimpleCAS
      * If the session contains a CAS principal identifier, the current session
      * will be considered authenticated.
      *
-     * @param \SimpleCAS_Protocol                   $protocol
-     * @param Symfony\Components\HttpKernel\Request $request
-     * @param Symfony\Framework\WebBundle\User      $user
+     * @param \SimpleCAS_Protocol                    $protocol
+     * @param Symfony\Components\HttpKernel\Request  $request
+     * @param Symfony\Framework\WebBundle\User       $user
+     * @param Bundle\SimpleCASBundle\Adapter\Adapter $adapter
      * @return SimpleCAS
      */
-    public function __construct(\SimpleCAS_Protocol $protocol, Request $request, User $user)
+    public function __construct(\SimpleCAS_Protocol $protocol, Request $request, User $user, Adapter $adapter = null)
     {
         $this->protocol = $protocol;
         $this->request = $request;
         $this->user = $user;
+        $this->adapter = $adapter;
 
         if ($this->user->getAttribute(self::UID)) {
             $this->authenticated = true;
@@ -141,6 +151,51 @@ class SimpleCAS
         $this->user->removeAttribute(self::UID);
         $this->authenticated = false;
         return $this;
+    }
+
+
+    /**
+     * Return the database object for the authenticated user or null if the
+     * current user is not authenticated.
+     *
+     * This method will throw a BadMethodCallException if no database adapter is
+     * available.  An UnexpectedValueException will be thrown if no user object
+     * can be found for the principal.
+     *
+     * @return object
+     * @throws \BadMethodCallException
+     * @throws \UnexpectedValueException
+     */
+    public function getAuthenticatedUser()
+    {
+        if (!$this->adapter) {
+            throw new \BadMethodCallException('SimpleCAS database adapter is not configured');
+        }
+
+        if ($this->authenticated) {
+            if ($user = $this->adapter->getUserByPrincipal($this->getAuthenticatedUid())) {
+                return $user;
+            } else {
+                throw new \UnexpectedValueException(sprintf('No user object found for principal identifier "%s"', $this->simplecas->getAuthenticatedUid()));
+            }
+        } else {
+            return null;
+        }
+    }
+
+
+    /**
+     * Return the database object for the authenticated user or redirect to the
+     * CAS server's login URL if the current user is not authenticated.
+     *
+     * A convenience method that wraps successive calls to requireLogin() and
+     * getAuthenticatedUser().
+     *
+     * @return object
+     */
+    public function requireAuthenticatedUser()
+    {
+        return $this->requireLogin()->getAuthenticatedUser();
     }
 
     /**
