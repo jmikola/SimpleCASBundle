@@ -30,6 +30,14 @@ class SimpleCASExtension extends LoaderExtension
             $configuration->merge($loader->load($this->resources['simplecas']));
         }
 
+        if (isset($config['adapter']['name'])) {
+            $configuration->setAlias('simplecas.adapter', 'simplecas.adapter.'.$config['adapter']['name']);
+
+            if (isset($config['adapter']['options'])) {
+                $configuration->setParameter('simplecas.adapter.options', $config['adapter']['options']);
+            }
+        }
+
         foreach (array('hostname', 'uri', 'logout_service_redirect') as $key) {
             if (isset($config['protocol'][$key])) {
                 $configuration->setParameter('simplecas.protocol.'.$key, $config['protocol'][$key]);
