@@ -18,6 +18,9 @@ which itself depends on [Net_URL2](http://pear.php.net/package/Net_URL2).  You
 may have to install these packages manually if PEAR does not handle the dependency
 on its own.
 
+Alternatively, a [SimpleCAS git repository](http://github.com/jmikola/simplecas) is
+available, which contains a patch for logout service redirection support.
+
 ### Application Kernel
 
 Add SimpleCASBundle to the `registerBundles()` method of your application kernel:
@@ -75,3 +78,26 @@ See also:
 
  * [HTTP_Request2 config documentation](http://pear.php.net/manual/en/package.http.http-request2.config.php)
  * [HTTP_Request2 adapter documentation](http://pear.php.net/manual/en/package.http.http-request2.adapters.php)
+
+### Logout Service Redirection
+
+By default, the logout page for a CAS server renders a link to whatever value is
+passed as the "url" query string parameter.  This is standard behavior for the
+SimpleCAS library as well.
+
+For cases where you would rather have your CAS server immediately redirect to a
+URL after logging out, CAS allows a `followServiceRedirects` property to be set
+in the XML configuration for `LogoutController`.  This option will check for a
+"service" query string parameter and redirect to its value after processing the
+logout request.
+
+Support for this feature was added in the [SimpleCAS git repository](http://github.com/jmikola/simplecas),
+and SimpleCASBundle also has built-in support for the option:
+
+    simplecas.simplecas:
+      protocol:
+        logout_service_redirect: true
+
+See also:
+
+ * http://tp.its.yale.edu/pipermail/cas/2008-August/009508.html
