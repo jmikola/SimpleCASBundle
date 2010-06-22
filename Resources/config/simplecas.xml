@@ -6,11 +6,11 @@
         <parameter key="simplecas.class">Bundle\SimpleCASBundle\SimpleCAS</parameter>
         <parameter key="simplecas.protocol.class">SimpleCAS_Protocol_Version1</parameter>
         <parameter key="simplecas.protocol.request.class">HTTP_Request2</parameter>
+        <parameter key="simplecas.ticket_validator.class">Bundle\SimpleCASBundle\Listener\TicketValidator</parameter>
 
-        <parameter key="simplecas.login_redirect_route" />
-        <parameter key="simplecas.login_redirect_url" />
         <parameter key="simplecas.protocol.hostname">localhost:8443</parameter>
         <parameter key="simplecas.protocol.uri">cas</parameter>
+        <parameter key="simplecas.protocol.logout_service_redirect">false</parameter>
         <parameter key="simplecas.protocol.request.method">GET</parameter>
         <parameter key="simplecas.protocol.request.config" type="collection" />
     </parameters>
@@ -26,6 +26,7 @@
             <argument type="collection">
                 <argument key="hostname">%simplecas.protocol.hostname%</argument>
                 <argument key="uri">%simplecas.protocol.uri%</argument>
+                <argument key="logoutServiceRedirect">%simplecas.protocol.logout_service_redirect%</argument>
             </argument>
             <call method="setRequest">
                 <argument type="service" id="simplecas.protocol.request" />
