@@ -39,6 +39,12 @@
             <argument>%simplecas.protocol.request.config%</argument>
         </service>
 
+        <service id="simplecas.ticket_validator" class="%simplecas.ticket_validator.class%">
+            <annotation name="kernel.listener" />
+            <argument type="service" id="simplecas" />
+            <argument type="service" id="logger" on-invalid="ignore" />
+        </service>
+
         <service id="cas" alias="simplecas" />
     </services>
 
