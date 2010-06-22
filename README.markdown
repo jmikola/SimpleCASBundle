@@ -101,3 +101,26 @@ and SimpleCASBundle also has built-in support for the option:
 See also:
 
  * http://tp.its.yale.edu/pipermail/cas/2008-August/009508.html
+
+### Database Adapter
+
+Typically, you will end up using the principal identifier for the authenticated
+user to fetch a user object from the database.  SimpleCASBundle supports this
+using a database adapters, and the `SimpleCAS` class has two methods to faciliate
+fetching user objects for the authenticated principal.
+
+#### Doctrine ODM MongoDB
+
+The Doctrine ODM MongoDB adapter may be configured as:
+
+    simplecas.simplecas:
+      adapter:
+        name: doctrine.odm.mongodb
+        options:
+          document_name:    Application\ApplicationBundle\Entities\User
+          principal_field:  _id
+
+The above example will use the default document manager for ODM and attempt to
+match the principal identifier from CAS to the `_id` field on the given document.
+Both `document_name` and `principal_field` are required options.  An optional
+`document_manager` option exists to request a specific document manager by name.
