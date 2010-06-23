@@ -172,7 +172,7 @@ class SimpleCAS
             if ($user = $this->adapter->getUserByPrincipal($this->getAuthenticatedUid())) {
                 return $user;
             } else {
-                throw new \UnexpectedValueException(sprintf('No user object found for principal identifier "%s"', $this->simplecas->getAuthenticatedUid()));
+                throw new \UnexpectedValueException(sprintf('No user object found for principal identifier "%s"', $this->getAuthenticatedUid()));
             }
         } else {
             return null;
