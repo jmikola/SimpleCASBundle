@@ -2,7 +2,7 @@
 
 namespace Bundle\SimpleCASBundle;
 
-use Symfony\Foundation\Bundle\Bundle as BaseBundle;
+use Symfony\Foundation\Bundle\Bundle;
 use Symfony\Components\DependencyInjection\ContainerInterface;
 use Symfony\Components\DependencyInjection\Loader\Loader;
 use Bundle\SimpleCASBundle\DependencyInjection\SimpleCASExtension;
@@ -12,7 +12,7 @@ use Bundle\SimpleCASBundle\DependencyInjection\SimpleCASExtension;
  *
  * @author Jeremy Mikola <jmikola@gmail.com>
  */
-class Bundle extends BaseBundle
+class SimpleCASBundle extends Bundle
 {
     /**
      * Customizes the Container instance.

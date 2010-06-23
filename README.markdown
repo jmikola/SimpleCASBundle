@@ -28,7 +28,7 @@ Add SimpleCASBundle to the `registerBundles()` method of your application kernel
     public function registerBundles()
     {
         return array(
-            new Bundle\SimpleCASBundle\Bundle(),
+            new Bundle\SimpleCASBundle\SimpleCASBundle(),
         );
     }
 
