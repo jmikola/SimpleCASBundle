@@ -58,21 +58,20 @@ project:
 Enable loading of the SimpleCAS service by adding the following to the application's
 `config.yml` file:
 
-    simplecas.simplecas: ~
+    simplecas.client: ~
 
-This will enable the service using the default parameters defined in `simplecas.xml`.
-An example of more specific configuration follows: 
+This will enable the service default parameters defined in the dependency injection
+XML configuration.  An example of more specific configuration options follows:
 
-    simplecas.simplecas:
-      protocol:
-        hostname: cas-server.example.com:8443
-        uri:      cas
-        request:
-          method: GET
-          config:
-            adapter:         curl
-            ssl_verify_peer: true
-            ssl_cafile:      /etc/ssl/certs/tomcat-cas.pem
+    simplecas.client:
+      hostname: cas-server.example.com:8443
+      uri:      cas
+      request:
+        method: GET
+        config:
+          adapter:         curl
+          ssl_verify_peer: true
+          ssl_cafile:      /etc/ssl/certs/tomcat-cas.pem
 
 See also:
 
@@ -94,9 +93,8 @@ logout request.
 Support for this feature was added in the [SimpleCAS git repository](http://github.com/jmikola/simplecas),
 and SimpleCASBundle also has built-in support for the option:
 
-    simplecas.simplecas:
-      protocol:
-        logout_service_redirect: true
+    simplecas.client:
+      logout_service_redirect: true
 
 See also:
 
@@ -113,12 +111,11 @@ fetching user objects for the authenticated principal.
 
 The Doctrine ODM MongoDB adapter may be configured as:
 
-    simplecas.simplecas:
-      adapter:
-        name: doctrine.odm.mongodb
-        options:
-          document_name:    Application\ApplicationBundle\Entities\User
-          principal_field:  _id
+    simplecas.adapter:
+      name: doctrine.odm.mongodb
+      options:
+        document_name:    Application\ApplicationBundle\Entities\User
+        principal_field:  _id
 
 The above example will use the default document manager for ODM and attempt to
 match the principal identifier from CAS to the `_id` field on the given document.
