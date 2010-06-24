@@ -8,7 +8,7 @@ class AuthController extends Controller
 {
     public function loginAction()
     {
-        $parameters = array('uid' => $this->container->getCasService()->requireLogin()->getAuthenticatedUid());
+        $parameters = array('uid' => $this->container->getCasService()->requireUid());
         return $this->render('SimpleCASBundle:Auth:login', $parameters);
     }
 
