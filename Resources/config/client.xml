@@ -47,7 +47,7 @@
             <argument type="service" id="logger" on-invalid="ignore" />
         </service>
 
-        <service id="simplecas.templating.helper" class="%simplecas.templating_helper.classs%">
+        <service id="simplecas.templating.helper" class="%simplecas.templating_helper.class%">
             <annotation name="templating.helper" alias="simplecas" />
             <argument type="service" id="simplecas" />
         </service>
