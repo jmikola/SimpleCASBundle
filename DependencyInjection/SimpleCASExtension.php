@@ -16,6 +16,7 @@ class SimpleCASExtension extends LoaderExtension
     protected $resources = array(
         'adapter' => 'adapter.xml',
         'client'  => 'client.xml',
+        'helper'  => 'helper.xml',
     );
 
     /**
@@ -67,6 +68,22 @@ class SimpleCASExtension extends LoaderExtension
                     $configuration->setParameter('simplecas.protocol.request.'.$key, $config['request'][$key]);
                 }
             }
+        }
+
+        return $configuration;
+    }
+
+    /**
+     * Load the SimpleCAS templating helper configuration.
+     *
+     * @param array                $config        A configuration array
+     * @param BuilderConfiguration $configuration A BuilderConfiguration instance
+     */
+    public function helperLoad($config, BuilderConfiguration $configuration)
+    {
+        if (!$configuration->hasDefinition('helper')) {
+            $loader = new XmlFileLoader(__DIR__.'/../Resources/config');
+            $configuration->merge($loader->load($this->resources['helper']));
         }
 
         return $configuration;
