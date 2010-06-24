@@ -98,7 +98,7 @@ and SimpleCASBundle also has built-in support for the option:
 
 See also:
 
- * http://tp.its.yale.edu/pipermail/cas/2008-August/009508.html
+ * [http://tp.its.yale.edu/pipermail/cas/2008-August/009508.html](http://tp.its.yale.edu/pipermail/cas/2008-August/009508.html)
 
 ### Database Adapter
 
