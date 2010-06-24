@@ -14,40 +14,57 @@ use Symfony\Components\DependencyInjection\BuilderConfiguration;
 class SimpleCASExtension extends LoaderExtension
 {
     protected $resources = array(
-        'simplecas' => 'simplecas.xml',
+        'adapter' => 'adapter.xml',
+        'client'  => 'client.xml',
     );
 
     /**
-     * Load the SimpleCAS configuration.
+     * Load the SimpleCAS adapter configuration.
      *
      * @param array                $config        A configuration array
      * @param BuilderConfiguration $configuration A BuilderConfiguration instance
      */
-    public function simplecasLoad($config, BuilderConfiguration $configuration)
+    public function adapterLoad($config, BuilderConfiguration $configuration)
     {
-        if (!$configuration->hasDefinition('simplecas')) {
+        if (!$configuration->hasDefinition('adapter')) {
             $loader = new XmlFileLoader(__DIR__.'/../Resources/config');
-            $configuration->merge($loader->load($this->resources['simplecas']));
+            $configuration->merge($loader->load($this->resources['adapter']));
         }
 
-        if (isset($config['adapter']['name'])) {
-            $configuration->setAlias('simplecas.adapter', 'simplecas.adapter.'.$config['adapter']['name']);
+        if (isset($config['name'])) {
+            $configuration->setAlias('simplecas.adapter', 'simplecas.adapter.'.$config['name']);
 
-            if (isset($config['adapter']['options'])) {
-                $configuration->setParameter('simplecas.adapter.options', $config['adapter']['options']);
+            if (isset($config['options'])) {
+                $configuration->setParameter('simplecas.adapter.options', $config['options']);
             }
+        }
+
+        return $configuration;
+    }
+
+    /**
+     * Load the SimpleCAS client configuration.
+     *
+     * @param array                $config        A configuration array
+     * @param BuilderConfiguration $configuration A BuilderConfiguration instance
+     */
+    public function clientLoad($config, BuilderConfiguration $configuration)
+    {
+        if (!$configuration->hasDefinition('client')) {
+            $loader = new XmlFileLoader(__DIR__.'/../Resources/config');
+            $configuration->merge($loader->load($this->resources['client']));
         }
 
         foreach (array('hostname', 'uri', 'logout_service_redirect') as $key) {
-            if (isset($config['protocol'][$key])) {
-                $configuration->setParameter('simplecas.protocol.'.$key, $config['protocol'][$key]);
+            if (isset($config[$key])) {
+                $configuration->setParameter('simplecas.protocol.'.$key, $config[$key]);
             }
         }
 
-        if (isset($config['protocol']['request'])) {
+        if (isset($config['request'])) {
             foreach (array('method', 'config') as $key) {
-                if (isset($config['protocol']['request'][$key])) {
-                    $configuration->setParameter('simplecas.protocol.request.'.$key, $config['protocol']['request'][$key]);
+                if (isset($config['request'][$key])) {
+                    $configuration->setParameter('simplecas.protocol.request.'.$key, $config['request'][$key]);
                 }
             }
         }
