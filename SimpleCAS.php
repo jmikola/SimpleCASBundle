@@ -93,10 +93,10 @@ class SimpleCAS
     public function validateTicket($ticket)
     {
         if ($uid = $this->protocol->validateTicket($ticket, self::getURL())) {
-            $this->setAuthenticated($uid);
+            $this->authenticate($uid);
             return true;
         } else {
-            $this->removeAuthentication();
+            $this->unauthenticate();
             return false;
         }
     }
@@ -116,13 +116,13 @@ class SimpleCAS
      *
      * @return string
      */
-    public function getAuthenticatedUid()
+    public function getUid()
     {
         return $this->user->getAttribute(self::UID);
     }
 
     /**
-     * Marks the current session as authenticated.
+     * Marks the current session as authenticated for a principal identifier.
      *
      * This method may be used to force the authentication state of the user
      * without requiring validation against the CAS server.
@@ -130,7 +130,7 @@ class SimpleCAS
      * @param string $uid Principal identifier for the authenticated user
      * @return SimpleCAS
      */
-    public function setAuthenticatedUid($uid)
+    public function authenticate($uid)
     {
         $this->user->setAttribute(self::UID, $uid);
         $this->authenticated = true;
@@ -142,7 +142,7 @@ class SimpleCAS
      *
      * @return SimpleCAS
      */
-    public function removeAuthentication()
+    public function unauthenticate()
     {
         $this->user->removeAttribute(self::UID);
         $this->authenticated = false;
@@ -162,36 +162,49 @@ class SimpleCAS
      * @throws \BadMethodCallException
      * @throws \UnexpectedValueException
      */
-    public function getAuthenticatedUser()
+    public function getUser()
     {
         if (!$this->adapter) {
             throw new \BadMethodCallException('SimpleCAS database adapter is not configured');
         }
 
         if ($this->authenticated) {
-            if ($user = $this->adapter->getUserByPrincipal($this->getAuthenticatedUid())) {
+            if ($user = $this->adapter->getUserByPrincipal($this->getUid())) {
                 return $user;
             } else {
-                throw new \UnexpectedValueException(sprintf('No user object found for principal identifier "%s"', $this->getAuthenticatedUid()));
+                throw new \UnexpectedValueException(sprintf('No user object found for principal identifier "%s"', $this->getUid()));
             }
         } else {
             return null;
         }
     }
 
-
     /**
      * Return the database object for the authenticated user or redirect to the
      * CAS server's login URL if the current user is not authenticated.
      *
      * A convenience method that wraps successive calls to requireLogin() and
-     * getAuthenticatedUser().
+     * getUser().
      *
      * @return object
      */
-    public function requireAuthenticatedUser()
+    public function requireUser()
     {
-        return $this->requireLogin()->getAuthenticatedUser();
+        return $this->requireLogin()->getUser();
+    }
+
+    /**
+     * Return the authenticated user's principal identifier or redirect to the
+     * CAS server's login URL if the current user is not authenticated.
+     *
+     * A convenience method that wraps successive calls to requireLogin() and
+     * getUid().
+     *
+     * @return string
+     */
+    public function requireUid()
+    {
+        return $this->requireLogin()->getUid();
     }
 
     /**
@@ -221,7 +234,7 @@ class SimpleCAS
     public function requireLogout()
     {
         if ($this->authenticated) {
-            $this->removeAuthentication()->redirect($this->getLogoutUrl());
+            $this->unauthenticate()->redirect($this->getLogoutUrl());
         }
         return $this;
     }
@@ -257,7 +270,7 @@ class SimpleCAS
      *
      * @return string url
      */
-    public function getCurrentURL()
+    public function getCurrentUrl()
     {
         $replacements = array(
             '/\?logout/'        => '',
