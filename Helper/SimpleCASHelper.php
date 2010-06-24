@@ -14,19 +14,6 @@ use Bundle\SimpleCASBundle\SimpleCAS;
 class SimpleCASHelper extends Helper
 {
     /**
-     * SimpleCAS client methods that this helper supports.
-     *
-     * @var array
-     */
-    protected $proxiedMethods = array(
-        'isAuthenticated',
-        'getAuthenticatedUid',
-        'getAuthenticatedUser',
-        'getLoginUrl',
-        'getLogoutUrl',
-    );
-
-    /**
      * SimpleCAS client instance.
      *
      * @var SimpleCAS
@@ -45,20 +32,70 @@ class SimpleCASHelper extends Helper
     }
 
     /**
-     * Catches getter methods to 
+     * Check if the current session is authenticated.
      *
-     * @param string $method    The called method name
-     * @param array  $arguments The method arguments
-     * @return mixed
-     * @throws \BadMethodCallException When calling an undefined getter method
+     * @see SimpleCAS::isAuthenticated()
+     * @return boolean
      */
-    public function __call($method, $arguments)
+    public function isAuthenticated()
     {
-        if (!in_array($method, $this->proxiedMethods)) {
-            throw new \BadMethodCallException(sprintf('Call to unsupported method: %s', $method));
-        }
+        return $this->simplecas->isAuthenticated();
+    }
 
-        return call_user_func_array(array($this->simplecas, $method), $arguments);
+    /**
+     * Return the authenticated user's principal identifier.
+     *
+     * @see SimpleCAS::getUid()
+     * @return string
+     */
+    public function getUid()
+    {
+        return $this->simplecas->getUid();
+    }
+
+    /**
+     * Return the database object for the authenticated user or null if the
+     * current user is not authenticated.
+     *
+     * This method will throw a BadMethodCallException if no database adapter is
+     * available.  An UnexpectedValueException will be thrown if no user object
+     * can be found for the principal.
+     *
+     * @return object
+     * @throws \BadMethodCallException
+     * @throws \UnexpectedValueException
+     */
+    public function getUser()
+    {
+        return $this->simplecas->getUser();
+    }
+
+    /**
+     * Return the CAS server's login URL.
+     *
+     * The service URL is optional and will default to the current URL.
+     *
+     * @see SimpleCAS::getLoginUrl()
+     * @param string $url
+     * @return string
+     */
+    public function getLoginUrl($url = null)
+    {
+        return $this->simplecas->getLoginUrl($url);
+    }
+
+    /**
+     * Return the CAS server's logout URL.
+     *
+     * The service URL is optional and will default to the current URL.
+     *
+     * @see SimpleCAS::getLogoutUrl()
+     * @param string $url
+     * @return string
+     */
+    public function getLogoutUrl($url = null)
+    {
+        return $this->simplecas->getLogoutUrl($url);
     }
 
     /**
