@@ -100,6 +100,13 @@ See also:
 
  * [http://tp.its.yale.edu/pipermail/cas/2008-August/009508.html](http://tp.its.yale.edu/pipermail/cas/2008-August/009508.html)
 
+### Templating Helper
+
+A templating helper, named "simplecas", exists to provide access to is/get methods
+on the SimpleCAS client service to view templates.  This helper can be enabled with:
+
+    simplecas.helper: ~
+
 ### Database Adapter
 
 Typically, you will end up using the principal identifier for the authenticated
