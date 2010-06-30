@@ -49,7 +49,7 @@ class TicketValidator
         }
 
         if ($this->container->hasService('simplecas')) {
-            $simplecas = $this->container->hasService('simplecas');
+            $simplecas = $this->container->getService('simplecas');
             $request = $event->getParameter('request');
 
             if ($ticket = $request->query->get(self::TICKET)) {
