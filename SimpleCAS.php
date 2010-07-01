@@ -92,7 +92,7 @@ class SimpleCAS
      */
     public function validateTicket($ticket)
     {
-        if ($uid = $this->protocol->validateTicket($ticket, self::getLoginUrl())) {
+        if ($uid = $this->protocol->validateTicket($ticket, self::getCurrentUrl())) {
             $this->authenticate($uid);
             return true;
         } else {
