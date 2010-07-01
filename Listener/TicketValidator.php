@@ -55,11 +55,11 @@ class TicketValidator
             if ($ticket = $request->query->get(self::TICKET)) {
                 if ($simplecas->validateTicket($ticket)) {
                     if (null !== $this->logger) {
-                        $this->logger->info(sprintf('Validated CAS ticket for principal identifier "%s"', $simplecas->getAuthenticatedUid()));
+                        $this->logger->info(sprintf('Validated CAS ticket "%s" for principal identifier "%s"', $ticket, $simplecas->getAuthenticatedUid()));
                     }
                 } else {
                     if (null !== $this->logger) {
-                        $this->logger->err(sprintf('Invalid CAS ticket "%s" for request: %s', $request->getPathInfo()));
+                        $this->logger->err(sprintf('Invalid CAS ticket "%s" for request: %s', $ticket, $request->getPathInfo()));
                     }
                 }
             }
