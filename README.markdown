@@ -1,7 +1,7 @@
 # SimpleCASBundle
 
 This bundle integrates [SimpleCAS](http://code.google.com/p/simplecas/) into
-[Symfony 2](http://github.com/symfony/symfony), which allows users to be
+[Symfony2](http://github.com/symfony/symfony), which allows users to be
 authenticated against a [CAS server](http://www.jasig.org/cas).
 
 ## Installation
