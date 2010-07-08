@@ -92,7 +92,7 @@ class SimpleCAS
      */
     public function validateTicket($ticket)
     {
-        if ($uid = $this->protocol->validateTicket($ticket, self::getCurrentUrl())) {
+        if ($uid = $this->protocol->validateTicket($ticket, $this->getCurrentUrl())) {
             $this->authenticate($uid);
             return true;
         } else {
@@ -280,7 +280,8 @@ class SimpleCAS
             '/\?&/'             => '?',
             '/\?$/'             => '',
         );
-        return preg_replace(array_keys($replacements), array_values($replacements), $this->request->getUri());
+        $uri = $this->request->getScheme() . '://' . $this->request->getHost() . $this->request->getRequestUri();
+        return preg_replace(array_keys($replacements), array_values($replacements), $uri);
     }
 
     /**
