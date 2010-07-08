@@ -58,16 +58,20 @@ class SimpleCASHelper extends Helper
      * current user is not authenticated.
      *
      * This method will throw a BadMethodCallException if no database adapter is
-     * available.  An UnexpectedValueException will be thrown if no user object
-     * can be found for the principal.
+     * available.  If no user object can be found for an authenticated user's
+     * principal, this method will catch the UnexpectedValueException from the
+     * client class and return null.
      *
      * @return object
      * @throws \BadMethodCallException
-     * @throws \UnexpectedValueException
      */
     public function getUser()
     {
-        return $this->simplecas->getUser();
+        try {
+            return $this->simplecas->getUser();
+        } catch (\UnexpectedValueException $e) {
+            return null;
+        }
     }
 
     /**
