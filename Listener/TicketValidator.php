@@ -62,6 +62,12 @@ class TicketValidator
                         $this->logger->err(sprintf('Invalid CAS ticket "%s" for request: %s', $ticket, $request->getPathInfo()));
                     }
                 }
+
+                $response = $this->container->getService('response');
+                $response->setStatusCode(302);
+                $response->headers->set('Location', $simplecas->getCurrentUrl());
+                $event->setReturnValue($response);
+                return true;
             }
         }
     }
