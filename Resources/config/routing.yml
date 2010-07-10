@@ -1,7 +1,0 @@
-simplecas_login:
-  pattern: /login
-  defaults: { _controller: SimpleCASBundle:Auth:login }
-
-simplecas_logout:
-  pattern: /logout
-  defaults: { _controller: SimpleCASBundle:Auth:logout }
