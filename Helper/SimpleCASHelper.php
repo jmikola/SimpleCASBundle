@@ -4,6 +4,7 @@ namespace Bundle\SimpleCASBundle\Helper;
 
 use Symfony\Components\Templating\Helper\Helper;
 use Bundle\SimpleCASBundle\SimpleCAS;
+use Bundle\SimpleCASBundle\Exception\NoUserForPrincipalException;
 
 /**
  * SimpleCASHelper acts as a proxy for getter methods on the SimpleCAS client
@@ -59,8 +60,8 @@ class SimpleCASHelper extends Helper
      *
      * This method will throw a BadMethodCallException if no database adapter is
      * available.  If no user object can be found for an authenticated user's
-     * principal, this method will catch the UnexpectedValueException from the
-     * client class and return null.
+     * principal, this method will catch the NoUserForPrincipalException from
+     * the client class and return null.
      *
      * @return object
      * @throws \BadMethodCallException
@@ -69,7 +70,7 @@ class SimpleCASHelper extends Helper
     {
         try {
             return $this->simplecas->getUser();
-        } catch (\UnexpectedValueException $e) {
+        } catch (NoUserForPrincipalException $e) {
             return null;
         }
     }
