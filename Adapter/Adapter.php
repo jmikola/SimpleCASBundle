@@ -7,7 +7,6 @@ namespace Bundle\SimpleCASBundle\Adapter;
  *
  * @author Jeremy Mikola <jmikola@gmail.com>
  */
-
 interface Adapter
 {
     /**

@@ -4,6 +4,8 @@
 
     <parameters>
         <parameter key="simplecas.adapter.doctrine.odm.mongodb.class">Bundle\SimpleCASBundle\Adapter\Doctrine\ODM\MongoDBAdapter</parameter>
+        <parameter key="simplecas.no_user_for_principal.class">Bundle\SimpleCASBundle\Listener\NoUserForPrincipal</parameter>
+
         <parameter key="simplecas.adapter.options" type="collection" />
     </parameters>
 
@@ -11,6 +13,11 @@
         <service id="simplecas.adapter.doctrine.odm.mongodb" class="%simplecas.adapter.doctrine.odm.mongodb.class%">
             <argument type="service" id="service_container" />
             <argument>%simplecas.adapter.options%</argument>
+        </service>
+        <service id="simplecas.no_user_for_principal" class="%simplecas.no_user_for_principal.class%">
+            <annotation name="kernel.listener" />
+            <argument type="service" id="service_container" />
+            <argument type="service" id="logger" on-invalid="ignore" />
         </service>
     </services>
 
