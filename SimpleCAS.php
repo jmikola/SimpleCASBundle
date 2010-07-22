@@ -2,9 +2,10 @@
 
 namespace Bundle\SimpleCASBundle;
 
-use Bundle\SimpleCASBundle\Adapter\Adapter;
 use Symfony\Components\HttpKernel\Request;
 use Symfony\Framework\WebBundle\User;
+use Bundle\SimpleCASBundle\Adapter\Adapter;
+use Bundle\SimpleCASBundle\Exception\NoUserForPrincipalException;
 
 /**
  * Client class for authenticating users against a CAS server using SimpleCAS.
@@ -155,12 +156,12 @@ class SimpleCAS
      * current user is not authenticated.
      *
      * This method will throw a BadMethodCallException if no database adapter is
-     * available.  An UnexpectedValueException will be thrown if no user object
-     * can be found for the principal.
+     * available.  A NoUserForPrincipalException will be thrown if no user
+     * object can be found for the principal.
      *
      * @return object
      * @throws \BadMethodCallException
-     * @throws \UnexpectedValueException
+     * @throws Bundle\SimpleCASBundle\Exception\NoUserForPrincipalException
      */
     public function getUser()
     {
@@ -172,7 +173,7 @@ class SimpleCAS
             if ($user = $this->adapter->getUserByPrincipal($this->getUid())) {
                 return $user;
             } else {
-                throw new \UnexpectedValueException(sprintf('No user object found for principal identifier "%s"', $this->getUid()));
+                throw new NoUserForPrincipalException(sprintf('No user object found for principal identifier "%s"', $this->getUid()));
             }
         } else {
             return null;
