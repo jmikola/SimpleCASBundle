@@ -53,7 +53,7 @@ class MongoDBAdapter implements Adapter
             $service = 'doctrine.odm.document_manager';
         }
 
-        $this->documentManager = $container->getService($service);
+        $this->documentManager = $container->get($service);
         $this->documentName = $options['document_name'];
         $this->principalField = $options['principal_field'];
     }

@@ -3,7 +3,7 @@
 namespace Bundle\SimpleCASBundle;
 
 use Symfony\Components\HttpKernel\Request;
-use Symfony\Framework\WebBundle\User;
+use Symfony\Bundle\FrameworkBundle\User;
 use Bundle\SimpleCASBundle\Adapter\Adapter;
 use Bundle\SimpleCASBundle\Exception\NoUserForPrincipalException;
 
@@ -40,7 +40,7 @@ class SimpleCAS
     /**
      * User session service.
      *
-     * @var Symfony\Framework\WebBundle\User
+     * @var Symfony\Bundle\FrameworkBundle\User
      */
     protected $user;
 
@@ -66,7 +66,7 @@ class SimpleCAS
      *
      * @param \SimpleCAS_Protocol                    $protocol
      * @param Symfony\Components\HttpKernel\Request  $request
-     * @param Symfony\Framework\WebBundle\User       $user
+     * @param Symfony\Bundle\FrameworkBundle\User       $user
      * @param Bundle\SimpleCASBundle\Adapter\Adapter $adapter
      * @return SimpleCAS
      */

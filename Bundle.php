@@ -3,7 +3,8 @@
 namespace Bundle\SimpleCASBundle;
 
 use Symfony\Components\DependencyInjection\ContainerInterface;
-use Symfony\Components\DependencyInjection\Loader\Loader;
+use Symfony\Components\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Components\DependencyInjection\ContainerBuilder;
 use Bundle\SimpleCASBundle\DependencyInjection\SimpleCASExtension;
 
 /**
@@ -11,7 +12,7 @@ use Bundle\SimpleCASBundle\DependencyInjection\SimpleCASExtension;
  *
  * @author Jeremy Mikola <jmikola@gmail.com>
  */
-class Bundle extends \Symfony\Foundation\Bundle\Bundle
+class Bundle extends \Symfony\Framework\Bundle\Bundle
 {
     /**
      * Customizes the Container instance.
@@ -19,8 +20,8 @@ class Bundle extends \Symfony\Foundation\Bundle\Bundle
      * @param Symfony\Components\DependencyInjection\ContainerInterface $container A ContainerInterface instance
      * @return Symfony\Components\DependencyInjection\BuilderConfiguration A BuilderConfiguration instance
      */
-    public function buildContainer(ContainerInterface $container)
+    public function buildContainer(ParameterBagInterface $parameterBag)
     {
-        Loader::registerExtension(new SimpleCASExtension());
+        ContainerBuilder::registerExtension(new SimpleCASExtension());
     }
 }

@@ -2,16 +2,16 @@
 
 namespace Bundle\SimpleCASBundle\DependencyInjection;
 
-use Symfony\Components\DependencyInjection\Loader\LoaderExtension;
+use Symfony\Components\DependencyInjection\Extension\Extension;
 use Symfony\Components\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Components\DependencyInjection\BuilderConfiguration;
+use Symfony\Components\DependencyInjection\ContainerBuilder;
 
 /**
  * SimpleCASExtension is an extension for the SimpleCAS library.
  *
  * @author Jeremy Mikola <jmikola@gmail.com>
  */
-class SimpleCASExtension extends LoaderExtension
+class SimpleCASExtension extends Extension
 {
     protected $resources = array(
         'adapter' => 'adapter.xml',
@@ -23,70 +23,67 @@ class SimpleCASExtension extends LoaderExtension
      * Load the SimpleCAS adapter configuration.
      *
      * @param array                $config        A configuration array
-     * @param BuilderConfiguration $configuration A BuilderConfiguration instance
+     * @param ContainerBuilder $container A BuilderConfiguration instance
      */
-    public function adapterLoad($config, BuilderConfiguration $configuration)
+    public function adapterLoad($config, ContainerBuilder $container)
     {
-        if (!$configuration->hasDefinition('adapter')) {
-            $loader = new XmlFileLoader(__DIR__.'/../Resources/config');
-            $configuration->merge($loader->load($this->resources['adapter']));
+        if (!$container->hasDefinition('adapter')) {
+            $loader = new XmlFileLoader($container, __DIR__.'/../Resources/config');
+            $loader->load($this->resources['adapter']);
         }
 
         if (isset($config['name'])) {
-            $configuration->setAlias('simplecas.adapter', 'simplecas.adapter.'.$config['name']);
+            $container->setAlias('simplecas.adapter', 'simplecas.adapter.'.$config['name']);
 
             if (isset($config['options'])) {
-                $configuration->setParameter('simplecas.adapter.options', $config['options']);
+                $container->setParameter('simplecas.adapter.options', $config['options']);
             }
         }
-
-        return $configuration;
+		return $container;
     }
 
     /**
      * Load the SimpleCAS client configuration.
      *
      * @param array                $config        A configuration array
-     * @param BuilderConfiguration $configuration A BuilderConfiguration instance
+     * @param ContainerBuilder $container A BuilderConfiguration instance
      */
-    public function clientLoad($config, BuilderConfiguration $configuration)
+    public function clientLoad($config, ContainerBuilder $container)
     {
-        if (!$configuration->hasDefinition('client')) {
-            $loader = new XmlFileLoader(__DIR__.'/../Resources/config');
-            $configuration->merge($loader->load($this->resources['client']));
+        if (!$container->hasDefinition('client')) {
+            $loader = new XmlFileLoader($container, __DIR__.'/../Resources/config');
+            $loader->load($this->resources['client']);
         }
 
         foreach (array('hostname', 'uri', 'logout_service_redirect') as $key) {
             if (isset($config[$key])) {
-                $configuration->setParameter('simplecas.protocol.'.$key, $config[$key]);
+                $container->setParameter('simplecas.protocol.'.$key, $config[$key]);
             }
         }
 
         if (isset($config['request'])) {
             foreach (array('method', 'config') as $key) {
                 if (isset($config['request'][$key])) {
-                    $configuration->setParameter('simplecas.protocol.request.'.$key, $config['request'][$key]);
+                    $container->setParameter('simplecas.protocol.request.'.$key, $config['request'][$key]);
                 }
             }
         }
-
-        return $configuration;
+		return $container;
     }
 
     /**
      * Load the SimpleCAS templating helper configuration.
      *
      * @param array                $config        A configuration array
-     * @param BuilderConfiguration $configuration A BuilderConfiguration instance
+     * @param ContainerBuilder $container A BuilderConfiguration instance
      */
-    public function helperLoad($config, BuilderConfiguration $configuration)
+    public function helperLoad($config, ContainerBuilder $container)
     {
-        if (!$configuration->hasDefinition('helper')) {
-            $loader = new XmlFileLoader(__DIR__.'/../Resources/config');
-            $configuration->merge($loader->load($this->resources['helper']));
+        if (!$container->hasDefinition('helper')) {
+            $loader = new XmlFileLoader($container, __DIR__.'/../Resources/config');
+            $loader->load($this->resources['helper']);
         }
-
-        return $configuration;
+		return $container;
     }
 
     /**

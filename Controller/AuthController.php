@@ -2,7 +2,7 @@
 
 namespace Bundle\SimpleCASBundle\Controller;
 
-use Symfony\Framework\WebBundle\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller;
 
 abstract class AuthController extends Controller
 {
@@ -13,7 +13,7 @@ abstract class AuthController extends Controller
 
     public function loginAction()
     {
-        $simplecas = $this->container->getService('simplecas');
+        $simplecas = $this->container->get('simplecas');
 
         /* If the user is attempting to log in while already authenticated,
          * assume they wish to reauthenticate as another user.  Redirect the
@@ -40,7 +40,7 @@ abstract class AuthController extends Controller
 
     public function logoutAction()
     {
-        $simplecas = $this->container->getService('simplecas');
+        $simplecas = $this->container->get('simplecas');
         $simplecas->unauthenticate();
         return $this->redirect($simplecas->getLogoutUrl($this->getServiceUrl()));
     }

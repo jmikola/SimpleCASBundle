@@ -48,8 +48,8 @@ class TicketValidator
             return;
         }
 
-        if ($this->container->hasService('simplecas')) {
-            $simplecas = $this->container->getService('simplecas');
+        if ($this->container->has('simplecas')) {
+            $simplecas = $this->container->get('simplecas');
             $request = $event->getParameter('request');
 
             if ($ticket = $request->query->get(self::TICKET)) {
@@ -63,7 +63,7 @@ class TicketValidator
                     }
                 }
 
-                $response = $this->container->getService('response');
+                $response = $this->container->get('response');
                 $response->setStatusCode(302);
                 $response->headers->set('Location', $simplecas->getCurrentUrl());
                 $event->setReturnValue($response);

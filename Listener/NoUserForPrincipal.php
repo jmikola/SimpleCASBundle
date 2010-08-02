@@ -56,7 +56,7 @@ class NoUserForPrincipal
             return;
         }
 
-        if ($this->container->hasService('simplecas')) {
+        if ($this->container->has('simplecas')) {
             $exception = $event->getParameter('exception');
 
             if ($exception instanceof NoUserForPrincipalException) {
@@ -64,10 +64,10 @@ class NoUserForPrincipal
                     $this->logger->err(sprintf('Redirecting to CAS logout page (%s)', $exception->getMessage()));
                 }
 
-                $simplecas = $this->container->getService('simplecas');
+                $simplecas = $this->container->get('simplecas');
                 $simplecas->unauthenticate();
 
-                $response = $this->container->getService('response');
+                $response = $this->container->get('response');
                 $response->setStatusCode(302);
                 $response->headers->set('Location', $simplecas->getLogoutUrl());
                 $event->setReturnValue($response);

@@ -5,7 +5,7 @@
     <parameters>
         <parameter key="simplecas.class">Bundle\SimpleCASBundle\SimpleCAS</parameter>
         <parameter key="simplecas.protocol.class">SimpleCAS_Protocol_Version1</parameter>
-        <parameter key="simplecas.protocol.request.class">\HTTP_Request2</parameter>
+        <parameter key="simplecas.protocol.request.class">HTTP_Request2</parameter>
         <parameter key="simplecas.ticket_validator.class">Bundle\SimpleCASBundle\Listener\TicketValidator</parameter>
 
         <parameter key="simplecas.protocol.hostname">localhost:8443</parameter>
