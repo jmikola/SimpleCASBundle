@@ -12,7 +12,7 @@ use Bundle\SimpleCASBundle\DependencyInjection\SimpleCASExtension;
  *
  * @author Jeremy Mikola <jmikola@gmail.com>
  */
-class Bundle extends \Symfony\Framework\Bundle\Bundle
+class SimpleCASBundle extends \Symfony\Framework\Bundle\Bundle
 {
     /**
      * Customizes the Container instance.
