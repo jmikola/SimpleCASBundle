@@ -19,7 +19,7 @@
         <service id="simplecas" class="%simplecas.class%">
             <argument type="service" id="simplecas.protocol" />
             <argument type="service" id="request" />
-            <argument type="service" id="user" />
+            <argument type="service" id="session" />
             <argument type="service" id="simplecas.adapter" on-invalid="ignore" />
         </service>
 

@@ -2,8 +2,8 @@
 
 namespace Bundle\SimpleCASBundle;
 
-use Symfony\Components\HttpKernel\Request;
-use Symfony\Bundle\FrameworkBundle\User;
+use Symfony\Components\HttpFoundation\Request;
+use Symfony\Components\HttpFoundation\Session;
 use Bundle\SimpleCASBundle\Adapter\Adapter;
 use Bundle\SimpleCASBundle\Exception\NoUserForPrincipalException;
 
@@ -33,7 +33,7 @@ class SimpleCAS
     /**
      * HTTP request object.
      *
-     * @var Symfony\Components\HttpKernel\Request
+     * @var Symfony\Components\HttpFoundation\Request
      */
     protected $request;
 
@@ -65,12 +65,12 @@ class SimpleCAS
      * will be considered authenticated.
      *
      * @param \SimpleCAS_Protocol                    $protocol
-     * @param Symfony\Components\HttpKernel\Request  $request
+     * @param Symfony\Components\HttpFoundation\Request  $request
      * @param Symfony\Bundle\FrameworkBundle\User       $user
      * @param Bundle\SimpleCASBundle\Adapter\Adapter $adapter
      * @return SimpleCAS
      */
-    public function __construct(\SimpleCAS_Protocol $protocol, Request $request, User $user, Adapter $adapter = null)
+    public function __construct(\SimpleCAS_Protocol $protocol, Request $request, Session $user, Adapter $adapter = null)
     {
         $this->protocol = $protocol;
         $this->request = $request;

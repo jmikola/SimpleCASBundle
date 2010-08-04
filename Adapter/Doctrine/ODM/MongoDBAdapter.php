@@ -48,9 +48,9 @@ class MongoDBAdapter implements Adapter
         }
 
         if (isset($options['document_manager'])) {
-            $service = sprintf('doctrine.odm.%s_document_manager', $options['document_manager']);
+            $service = sprintf('doctrine.odm.mongodb.%s_document_manager', $options['document_manager']);
         } else {
-            $service = 'doctrine.odm.document_manager';
+            $service = 'doctrine.odm.mongodb.document_manager';
         }
 
         $this->documentManager = $container->get($service);

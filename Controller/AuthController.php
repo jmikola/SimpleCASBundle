@@ -33,7 +33,7 @@ abstract class AuthController extends Controller
 
         // Use the default service URL if a refererr is not available
         $redirectUrl = $this->getUser()->removeAttribute(self::REFERER) ?:
-                       $this->getRequest()->headers->get('referer', $this->getServiceUrl());
+                       $this->getRequest()->headers->get('referer', $this->getUrl());
 
         return $this->redirect($simplecas->getLoginUrl($redirectUrl));
     }
@@ -42,7 +42,7 @@ abstract class AuthController extends Controller
     {
         $simplecas = $this->container->get('simplecas');
         $simplecas->unauthenticate();
-        return $this->redirect($simplecas->getLogoutUrl($this->getServiceUrl()));
+        return $this->redirect($simplecas->getLogoutUrl($this->getUrl()));
     }
 
     /**
@@ -51,5 +51,5 @@ abstract class AuthController extends Controller
      *
      * @return string
      */
-    abstract protected function getServiceUrl();
+    abstract protected function getUrl();
 }
