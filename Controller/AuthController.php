@@ -69,22 +69,22 @@ abstract class AuthController extends Controller
 
     /**
      * Check that the URL parameter does not point to the login action or one of
-     * the CAS login/logout URL's.
+     * the CAS login/logout URL's (sans query string).
      *
      * @param string $url
      * @return boolean
      */
     protected function isValidRedirectUrl($url) {
-        $parsedUrl = parse_url($url);
-
         $invalidUrls = array(
             $this->getLoginActionUrl(),
-            $this->getSimpleCAS()->getLoginUrl(),
-            $this->getSimpleCAS()->getLogoutUrl(),
+            preg_replace('/\?.*$/', '', $this->getSimpleCAS()->getLoginUrl()),
+            preg_replace('/\?.*$/', '', $this->getSimpleCAS()->getLogoutUrl()),
         );
 
         foreach ($invalidUrls as $invalidUrl) {
-            // TODO: Ensure candidate URL does not match host/path of any invalid URL
+            if (0 === strncmp($url, $invalidUrl, strlen($invalidUrl))) {
+                return false;
+            }
         }
 
         return true;
