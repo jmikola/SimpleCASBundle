@@ -41,7 +41,7 @@
         </service>
 
         <service id="simplecas.ticket_validator" class="%simplecas.ticket_validator.class%">
-            <annotation name="kernel.listener" />
+            <tag name="kernel.listener" />
             <argument type="service" id="service_container" />
             <argument type="service" id="logger" on-invalid="ignore" />
         </service>

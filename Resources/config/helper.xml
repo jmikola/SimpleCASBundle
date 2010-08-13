@@ -8,7 +8,7 @@
 
     <services>
         <service id="templating.helper.simplecas" class="%templating.helper.simplecas.class%">
-            <annotation name="templating.helper" alias="simplecas" />
+            <tag name="templating.helper" alias="simplecas" />
             <argument type="service" id="simplecas" />
         </service>
     </services>
