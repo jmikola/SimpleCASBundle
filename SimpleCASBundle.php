@@ -17,10 +17,10 @@ class SimpleCASBundle extends \Symfony\Framework\Bundle\Bundle
     /**
      * Customizes the Container instance.
      *
-     * @param Symfony\Components\DependencyInjection\ContainerInterface $container A ContainerInterface instance
+     * @param Symfony\Components\DependencyInjection\ContainerInterface $this->container A ContainerInterface instance
      * @return Symfony\Components\DependencyInjection\BuilderConfiguration A BuilderConfiguration instance
      */
-    public function buildContainer(ParameterBagInterface $parameterBag)
+    public function buildContainer()
     {
         ContainerBuilder::registerExtension(new SimpleCASExtension());
     }
