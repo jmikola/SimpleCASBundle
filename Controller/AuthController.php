@@ -45,6 +45,13 @@ abstract class AuthController extends Controller
         return $this->redirect($simplecas->getLogoutUrl($this->getUrl()));
     }
 
+	/**
+	 * @return \Symfony\Components\HttpFoundation\Request
+	 */
+	protected function getRequest() {
+		return $this->container->get('request');
+	}
+
     /**
      * Returns the service URL that CAS should redirect to after logging out.
      * This will also be used for logging in, if a referer is not available.
