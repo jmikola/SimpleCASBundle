@@ -121,7 +121,7 @@ The Doctrine ODM MongoDB adapter may be configured as:
     simplecas.adapter:
       name: doctrine.odm.mongodb
       options:
-        document_name:    Application\ApplicationBundle\Entities\User
+        document_name:    Application\ApplicationBundle\Document\User
         principal_field:  _id
 
 The above example will use the default document manager for ODM and attempt to
