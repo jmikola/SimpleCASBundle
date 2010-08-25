@@ -2,7 +2,7 @@
 
 namespace Bundle\SimpleCASBundle\Helper;
 
-use Symfony\Components\Templating\Helper\Helper;
+use Symfony\Component\Templating\Helper\Helper;
 use Bundle\SimpleCASBundle\SimpleCAS;
 use Bundle\SimpleCASBundle\Exception\NoUserForPrincipalException;
 

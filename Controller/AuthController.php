@@ -46,7 +46,7 @@ abstract class AuthController extends Controller
     }
 
 	/**
-	 * @return \Symfony\Components\HttpFoundation\Request
+	 * @return \Symfony\Component\HttpFoundation\Request
 	 */
 	protected function getRequest() {
 		return $this->container->get('request');

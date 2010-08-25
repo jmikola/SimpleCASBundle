@@ -2,11 +2,11 @@
 
 namespace Bundle\SimpleCASBundle\Listener;
 
-use Symfony\Components\DependencyInjection\ContainerInterface;
-use Symfony\Components\HttpKernel\HttpKernelInterface;
-use Symfony\Components\HttpKernel\LoggerInterface;
-use Symfony\Components\EventDispatcher\EventDispatcher;
-use Symfony\Components\EventDispatcher\Event;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\Event;
 use Bundle\SimpleCASBundle\Exception\NoUserForPrincipalException;
 
 /**
@@ -30,7 +30,7 @@ class NoUserForPrincipal
     /**
      * Registers a core.exception listener.
      *
-     * @param Symfony\Components\EventDispatcher\EventDispatcher $dispatcher
+     * @param Symfony\Component\EventDispatcher\EventDispatcher $dispatcher
      */
     public function register(EventDispatcher $dispatcher)
     {
@@ -48,7 +48,7 @@ class NoUserForPrincipal
      * Checks for a NoUserForPrincipalException and unauthenticates the user
      * locally and then remotely by redirecting to the CAS logout URL.
      *
-     * @param Symfony\Components\EventDispatcher\Event $event
+     * @param Symfony\Component\EventDispatcher\Event $event
      */
     public function handle(Event $event)
     {

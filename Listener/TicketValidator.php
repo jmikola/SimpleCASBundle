@@ -2,11 +2,11 @@
 
 namespace Bundle\SimpleCASBundle\Listener;
 
-use Symfony\Components\DependencyInjection\ContainerInterface;
-use Symfony\Components\HttpKernel\HttpKernelInterface;
-use Symfony\Components\HttpKernel\LoggerInterface;
-use Symfony\Components\EventDispatcher\EventDispatcher;
-use Symfony\Components\EventDispatcher\Event;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
  * TicketValidator listens to the core.request event and validates a CAS ticket
@@ -30,7 +30,7 @@ class TicketValidator
     /**
      * Registers a core.request listener.
      *
-     * @param Symfony\Components\EventDispatcher\EventDispatcher $dispatcher
+     * @param Symfony\Component\EventDispatcher\EventDispatcher $dispatcher
      */
     public function register(EventDispatcher $dispatcher)
     {
@@ -40,7 +40,7 @@ class TicketValidator
     /**
      * Validates the CAS ticket if one is found in the request's GET parameters.
      *
-     * @param Symfony\Components\EventDispatcher\Event $event
+     * @param Symfony\Component\EventDispatcher\Event $event
      */
     public function handle(Event $event)
     {

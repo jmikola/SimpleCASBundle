@@ -3,7 +3,7 @@
 namespace Bundle\SimpleCASBundle\Adapter\Doctrine\ODM;
 
 use Bundle\SimpleCASBundle\Adapter\Adapter;
-use Symfony\Components\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Doctrine ODM MongoDB adapter.
@@ -36,7 +36,7 @@ class MongoDBAdapter implements Adapter
     /**
      * MongoDBAdapter constructor.
      *
-     * @param Symfony\Components\DependencyInjection\ContainerInterface $container
+     * @param Symfony\Component\DependencyInjection\ContainerInterface $container
      * @param array                                                     $options
      * @return MongoDBAdapter
      * @throws \InvalidArgumentException
