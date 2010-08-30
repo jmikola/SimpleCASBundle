@@ -11,9 +11,28 @@ abstract class AuthController extends Controller
      */
     const REFERER = '__SIMPLECAS_LOGIN_REFERER';
 
+    /**
+     * Returns the absolute service URL that CAS should redirect to after
+     * logging out.  This will also be used for logging in, if a referer is not
+     * available.
+     *
+     * @return string
+     */
+    abstract protected function getServiceUrl();
+
+    /**
+     * Returns the absolute URL to the login action, which is needed by the
+     * login action to ensure it never redirects to itself.
+     *
+     * @return string
+     */
+    abstract protected function getLoginActionUrl();
+
     public function loginAction()
     {
-        $simplecas = $this->container->get('simplecas');
+        $simplecas = $this->getSimpleCAS();
+        $session = $this->getUser();
+        $requestHeaders = $this->getRequest()->headers;
 
         /* If the user is attempting to log in while already authenticated,
          * assume they wish to reauthenticate as another user.  Redirect the
@@ -24,39 +43,76 @@ abstract class AuthController extends Controller
         if ($simplecas->isAuthenticated()) {
             $simplecas->unauthenticate();
 
-            if ($referer = $this->getRequest()->headers->get('referer')) {
-                $this->getUser()->setAttribute(self::REFERER, $referer);
+            if ($referer = $requestHeaders->get('referer')) {
+                $session->setAttribute(self::REFERER, $referer);
             }
 
             return $this->redirect($simplecas->getLogoutUrl());
         }
 
-        // Use the default service URL if a refererr is not available
-        $redirectUrl = $this->getUser()->removeAttribute(self::REFERER) ?:
-                       $this->getRequest()->headers->get('referer', $this->getUrl());
+        // TODO: Refactor to use a single getRedirectUrl method
+        $redirectUrl = $session->get(self::REFERER, $requestHeaders->get('referer'));
+        $session->remove(self::REFERER);
+
+        // Default to service URL if the referrer is invalid
+        if (! $this->isValidRedirectUrl($redirectUrl)) {
+            $redirectUrl = $this->getServiceUrl();
+        }
 
         return $this->redirect($simplecas->getLoginUrl($redirectUrl));
     }
 
     public function logoutAction()
     {
-        $simplecas = $this->container->get('simplecas');
+        $simplecas = $this->getSimpleCAS();
         $simplecas->unauthenticate();
         return $this->redirect($simplecas->getLogoutUrl($this->getUrl()));
     }
 
-	/**
-	 * @return \Symfony\Component\HttpFoundation\Request
-	 */
-	protected function getRequest() {
-		return $this->container->get('request');
-	}
+    /**
+     * Check that the URL parameter does not point to the login action or one of
+     * the CAS login/logout URL's (sans query string).
+     *
+     * @param string $url
+     * @return boolean
+     */
+    protected function isValidRedirectUrl($url) {
+        $invalidUrls = array(
+        $this->getLoginActionUrl(),
+        preg_replace('/\?.*$/', '', $this->getSimpleCAS()->getLoginUrl()),
+        preg_replace('/\?.*$/', '', $this->getSimpleCAS()->getLogoutUrl()),
+        );
+
+        foreach ($invalidUrls as $invalidUrl) {
+            if (0 === strncmp($url, $invalidUrl, strlen($invalidUrl))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     /**
-     * Returns the service URL that CAS should redirect to after logging out.
-     * This will also be used for logging in, if a referer is not available.
-     *
-     * @return string
+     * @return \Symfony\Component\HttpFoundation\Request
      */
-    abstract protected function getUrl();
+    protected function getRequest()
+    {
+        return $this['request'];
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Session
+     */
+    protected function getSession()
+    {
+        return $this['session'];
+    }
+
+    /**
+     * @return \Bundle\SimpleCASBundle\SimpleCAS
+     */
+    protected function getSimpleCAS()
+    {
+        return $this['simplecas'];
+    }
 }
