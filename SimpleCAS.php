@@ -42,7 +42,7 @@ class SimpleCAS
      *
      * @var Symfony\Bundle\FrameworkBundle\User
      */
-    protected $user;
+    protected $session;
 
     /**
      * Database adapter.
@@ -64,20 +64,20 @@ class SimpleCAS
      * If the session contains a CAS principal identifier, the current session
      * will be considered authenticated.
      *
-     * @param \SimpleCAS_Protocol                    $protocol
-     * @param Symfony\Component\HttpFoundation\Request  $request
-     * @param Symfony\Bundle\FrameworkBundle\User       $user
+     * @param \SimpleCAS_Protocol $protocol
+     * @param Symfony\Component\HttpFoundation\Request $request
+     * @param Symfony\Component\HttpFoundation\Session $session
      * @param Bundle\SimpleCASBundle\Adapter\Adapter $adapter
      * @return SimpleCAS
      */
-    public function __construct(\SimpleCAS_Protocol $protocol, Request $request, Session $user, Adapter $adapter = null)
+    public function __construct(\SimpleCAS_Protocol $protocol, Request $request, Session $session, Adapter $adapter = null)
     {
         $this->protocol = $protocol;
         $this->request = $request;
-        $this->user = $user;
+        $this->session = $session;
         $this->adapter = $adapter;
 
-        if ($this->user->getAttribute(self::UID)) {
+        if ($this->session->get(self::UID)) {
             $this->authenticated = true;
         }
     }
@@ -119,7 +119,7 @@ class SimpleCAS
      */
     public function getUid()
     {
-        return $this->user->getAttribute(self::UID);
+        return $this->session->get(self::UID);
     }
 
     /**
@@ -133,7 +133,7 @@ class SimpleCAS
      */
     public function authenticate($uid)
     {
-        $this->user->setAttribute(self::UID, $uid);
+        $this->session->set(self::UID, $uid);
         $this->authenticated = true;
         return $this;
     }
@@ -145,7 +145,7 @@ class SimpleCAS
      */
     public function unauthenticate()
     {
-        $this->user->removeAttribute(self::UID);
+        $this->session->removeAttribute(self::UID);
         $this->authenticated = false;
         return $this;
     }
