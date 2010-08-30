@@ -44,7 +44,7 @@ abstract class AuthController extends Controller
             $simplecas->unauthenticate();
 
             if ($referer = $requestHeaders->get('referer')) {
-                $session->setAttribute(self::REFERER, $referer);
+                $session->set(self::REFERER, $referer);
             }
 
             return $this->redirect($simplecas->getLogoutUrl());
