@@ -3,7 +3,7 @@
 namespace Bundle\SimpleCASBundle\Adapter\Doctrine\ODM;
 
 use Bundle\SimpleCASBundle\Adapter\Adapter;
-use Symfony\Components\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Doctrine ODM MongoDB adapter.
@@ -36,7 +36,7 @@ class MongoDBAdapter implements Adapter
     /**
      * MongoDBAdapter constructor.
      *
-     * @param Symfony\Components\DependencyInjection\ContainerInterface $container
+     * @param Symfony\Component\DependencyInjection\ContainerInterface $container
      * @param array                                                     $options
      * @return MongoDBAdapter
      * @throws \InvalidArgumentException
@@ -48,12 +48,12 @@ class MongoDBAdapter implements Adapter
         }
 
         if (isset($options['document_manager'])) {
-            $service = sprintf('doctrine.odm.%s_document_manager', $options['document_manager']);
+            $service = sprintf('doctrine.odm.mongodb.%s_document_manager', $options['document_manager']);
         } else {
-            $service = 'doctrine.odm.document_manager';
+            $service = 'doctrine.odm.mongodb.document_manager';
         }
 
-        $this->documentManager = $container->getService($service);
+        $this->documentManager = $container->get($service);
         $this->documentName = $options['document_name'];
         $this->principalField = $options['principal_field'];
     }

@@ -2,8 +2,8 @@
 
 namespace Bundle\SimpleCASBundle;
 
-use Symfony\Components\HttpKernel\Request;
-use Symfony\Framework\WebBundle\User;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session;
 use Bundle\SimpleCASBundle\Adapter\Adapter;
 use Bundle\SimpleCASBundle\Exception\NoUserForPrincipalException;
 
@@ -33,16 +33,16 @@ class SimpleCAS
     /**
      * HTTP request object.
      *
-     * @var Symfony\Components\HttpKernel\Request
+     * @var Symfony\Component\HttpFoundation\Request
      */
     protected $request;
 
     /**
      * User session service.
      *
-     * @var Symfony\Framework\WebBundle\User
+     * @var Symfony\Bundle\FrameworkBundle\User
      */
-    protected $user;
+    protected $session;
 
     /**
      * Database adapter.
@@ -64,20 +64,20 @@ class SimpleCAS
      * If the session contains a CAS principal identifier, the current session
      * will be considered authenticated.
      *
-     * @param \SimpleCAS_Protocol                    $protocol
-     * @param Symfony\Components\HttpKernel\Request  $request
-     * @param Symfony\Framework\WebBundle\User       $user
+     * @param \SimpleCAS_Protocol                      $protocol
+     * @param Symfony\Component\HttpFoundation\Request $request
+     * @param Symfony\Component\HttpFoundation\Session $session
      * @param Bundle\SimpleCASBundle\Adapter\Adapter $adapter
      * @return SimpleCAS
      */
-    public function __construct(\SimpleCAS_Protocol $protocol, Request $request, User $user, Adapter $adapter = null)
+    public function __construct(\SimpleCAS_Protocol $protocol, Request $request, Session $session, Adapter $adapter = null)
     {
         $this->protocol = $protocol;
         $this->request = $request;
-        $this->user = $user;
+        $this->session = $session;
         $this->adapter = $adapter;
 
-        if ($this->user->getAttribute(self::UID)) {
+        if ($this->session->get(self::UID)) {
             $this->authenticated = true;
         }
     }
@@ -119,7 +119,7 @@ class SimpleCAS
      */
     public function getUid()
     {
-        return $this->user->getAttribute(self::UID);
+        return $this->session->get(self::UID);
     }
 
     /**
@@ -133,7 +133,7 @@ class SimpleCAS
      */
     public function authenticate($uid)
     {
-        $this->user->setAttribute(self::UID, $uid);
+        $this->session->set(self::UID, $uid);
         $this->authenticated = true;
         return $this;
     }
@@ -145,7 +145,7 @@ class SimpleCAS
      */
     public function unauthenticate()
     {
-        $this->user->removeAttribute(self::UID);
+        $this->session->remove(self::UID);
         $this->authenticated = false;
         return $this;
     }

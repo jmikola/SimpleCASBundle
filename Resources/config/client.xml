@@ -5,7 +5,7 @@
     <parameters>
         <parameter key="simplecas.class">Bundle\SimpleCASBundle\SimpleCAS</parameter>
         <parameter key="simplecas.protocol.class">SimpleCAS_Protocol_Version1</parameter>
-        <parameter key="simplecas.protocol.request.class">\HTTP_Request2</parameter>
+        <parameter key="simplecas.protocol.request.class">HTTP_Request2</parameter>
         <parameter key="simplecas.ticket_validator.class">Bundle\SimpleCASBundle\Listener\TicketValidator</parameter>
 
         <parameter key="simplecas.protocol.hostname">localhost:8443</parameter>
@@ -19,7 +19,7 @@
         <service id="simplecas" class="%simplecas.class%">
             <argument type="service" id="simplecas.protocol" />
             <argument type="service" id="request" />
-            <argument type="service" id="user" />
+            <argument type="service" id="session" />
             <argument type="service" id="simplecas.adapter" on-invalid="ignore" />
         </service>
 
@@ -41,7 +41,7 @@
         </service>
 
         <service id="simplecas.ticket_validator" class="%simplecas.ticket_validator.class%">
-            <annotation name="kernel.listener" />
+            <tag name="kernel.listener" />
             <argument type="service" id="service_container" />
             <argument type="service" id="logger" on-invalid="ignore" />
         </service>

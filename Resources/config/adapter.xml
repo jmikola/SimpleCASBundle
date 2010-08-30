@@ -15,7 +15,7 @@
             <argument>%simplecas.adapter.options%</argument>
         </service>
         <service id="simplecas.no_user_for_principal" class="%simplecas.no_user_for_principal.class%">
-            <annotation name="kernel.listener" />
+            <tag name="kernel.listener" />
             <argument type="service" id="service_container" />
             <argument type="service" id="logger" on-invalid="ignore" />
         </service>
