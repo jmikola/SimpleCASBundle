@@ -145,7 +145,7 @@ class SimpleCAS
      */
     public function unauthenticate()
     {
-        $this->session->removeAttribute(self::UID);
+        $this->session->remove(self::UID);
         $this->authenticated = false;
         return $this;
     }
