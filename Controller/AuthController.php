@@ -31,7 +31,7 @@ abstract class AuthController extends Controller
     public function loginAction()
     {
         $simplecas = $this->getSimpleCAS();
-        $session = $this->getUser();
+        $session = $this->getSession();
         $requestHeaders = $this->getRequest()->headers;
 
         /* If the user is attempting to log in while already authenticated,
@@ -115,4 +115,11 @@ abstract class AuthController extends Controller
     {
         return $this['simplecas'];
     }
+
+	/**
+	 * @return Symfony\Component\HttpFoundation\Session
+	 */
+	protected function getSession() {
+		return $this['session'];
+	}
 }
