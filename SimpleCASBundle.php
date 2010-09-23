@@ -7,4 +7,4 @@ namespace Bundle\SimpleCASBundle;
  *
  * @author Jeremy Mikola <jmikola@gmail.com>
  */
-class SimpleCASBundle extends \Symfony\Framework\Bundle\Bundle {}
+class SimpleCASBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle {}
