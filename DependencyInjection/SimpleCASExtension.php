@@ -40,7 +40,7 @@ class SimpleCASExtension extends Extension
             }
         }
 
-		return $container;
+        return $container;
     }
 
     /**
@@ -70,7 +70,7 @@ class SimpleCASExtension extends Extension
             }
         }
 
-		return $container;
+        return $container;
     }
 
     /**
@@ -86,7 +86,7 @@ class SimpleCASExtension extends Extension
             $loader->load($this->resources['helper']);
         }
 
-		return $container;
+        return $container;
     }
 
     /**

@@ -101,17 +101,18 @@ abstract class AuthController extends Controller
     }
 
     /**
+     * @return Symfony\Component\HttpFoundation\Session
+     */
+    protected function getSession()
+    {
+        return $this['session'];
+    }
+
+    /**
      * @return \Bundle\SimpleCASBundle\SimpleCAS
      */
     protected function getSimpleCAS()
     {
         return $this['simplecas'];
     }
-
-	/**
-	 * @return Symfony\Component\HttpFoundation\Session
-	 */
-	protected function getSession() {
-		return $this['session'];
-	}
 }
