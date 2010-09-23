@@ -31,7 +31,7 @@ abstract class AuthController extends Controller
     public function loginAction()
     {
         $simplecas = $this->getSimpleCAS();
-        $session = $this->getUser();
+        $session = $this->getSession();
         $requestHeaders = $this->getRequest()->headers;
 
         /* If the user is attempting to log in while already authenticated,
@@ -44,7 +44,7 @@ abstract class AuthController extends Controller
             $simplecas->unauthenticate();
 
             if ($referer = $requestHeaders->get('referer')) {
-                $session->setAttribute(self::REFERER, $referer);
+                $session->set(self::REFERER, $referer);
             }
 
             return $this->redirect($simplecas->getLogoutUrl());
@@ -101,18 +101,17 @@ abstract class AuthController extends Controller
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Session
-     */
-    protected function getSession()
-    {
-        return $this['session'];
-    }
-
-    /**
      * @return \Bundle\SimpleCASBundle\SimpleCAS
      */
     protected function getSimpleCAS()
     {
         return $this['simplecas'];
     }
+
+	/**
+	 * @return Symfony\Component\HttpFoundation\Session
+	 */
+	protected function getSession() {
+		return $this['session'];
+	}
 }
