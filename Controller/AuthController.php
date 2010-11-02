@@ -66,7 +66,7 @@ abstract class AuthController extends Controller
     {
         $simplecas = $this->getSimpleCAS();
         $simplecas->unauthenticate();
-        return $this->redirect($simplecas->getLogoutUrl($this->getUrl()));
+        return $this->redirect($simplecas->getLogoutUrl($this->getServiceUrl()));
     }
 
     /**
