@@ -22,7 +22,7 @@ class SimpleCASExtension extends Extension
     /**
      * Load the SimpleCAS adapter configuration.
      *
-     * @param array                $config        A configuration array
+     * @param array            $config    A configuration array
      * @param ContainerBuilder $container A BuilderConfiguration instance
      */
     public function adapterLoad($config, ContainerBuilder $container)
@@ -39,13 +39,14 @@ class SimpleCASExtension extends Extension
                 $container->setParameter('simplecas.adapter.options', $config['options']);
             }
         }
-		return $container;
+
+        return $container;
     }
 
     /**
      * Load the SimpleCAS client configuration.
      *
-     * @param array                $config        A configuration array
+     * @param array            $config    A configuration array
      * @param ContainerBuilder $container A BuilderConfiguration instance
      */
     public function clientLoad($config, ContainerBuilder $container)
@@ -68,13 +69,14 @@ class SimpleCASExtension extends Extension
                 }
             }
         }
-		return $container;
+
+        return $container;
     }
 
     /**
      * Load the SimpleCAS templating helper configuration.
      *
-     * @param array                $config        A configuration array
+     * @param array            $config    A configuration array
      * @param ContainerBuilder $container A BuilderConfiguration instance
      */
     public function helperLoad($config, ContainerBuilder $container)
@@ -83,7 +85,8 @@ class SimpleCASExtension extends Extension
             $loader = new XmlFileLoader($container, __DIR__.'/../Resources/config');
             $loader->load($this->resources['helper']);
         }
-		return $container;
+
+        return $container;
     }
 
     /**

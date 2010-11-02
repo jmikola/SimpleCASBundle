@@ -64,7 +64,7 @@ class SimpleCAS
      * If the session contains a CAS principal identifier, the current session
      * will be considered authenticated.
      *
-     * @param \SimpleCAS_Protocol $protocol
+     * @param \SimpleCAS_Protocol                      $protocol
      * @param Symfony\Component\HttpFoundation\Request $request
      * @param Symfony\Component\HttpFoundation\Session $session
      * @param Bundle\SimpleCASBundle\Adapter\Adapter $adapter
