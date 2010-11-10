@@ -52,7 +52,7 @@ class TicketValidator
             $simplecas = $this->container->get('simplecas');
             $request = $event->getParameter('request');
 
-            if ($ticket = $request->query->get(self::TICKET)) {
+            if ($ticket = $request->query->get(static::TICKET)) {
                 if ($simplecas->validateTicket($ticket)) {
                     if (null !== $this->logger) {
                         $this->logger->info(sprintf('Validated CAS ticket "%s" for principal identifier "%s"', $ticket, $simplecas->getUid()));

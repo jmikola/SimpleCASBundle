@@ -44,15 +44,15 @@ abstract class AuthController extends Controller
             $simplecas->unauthenticate();
 
             if ($referer = $requestHeaders->get('referer')) {
-                $session->set(self::REFERER, $referer);
+                $session->set(static::REFERER, $referer);
             }
 
             return $this->redirect($simplecas->getLogoutUrl());
         }
 
         // TODO: Refactor to use a single getRedirectUrl method
-        $redirectUrl = $session->get(self::REFERER, $requestHeaders->get('referer'));
-        $session->remove(self::REFERER);
+        $redirectUrl = $session->get(static::REFERER, $requestHeaders->get('referer'));
+        $session->remove(static::REFERER);
 
         // Default to service URL if the referrer is invalid
         if (! $this->isValidRedirectUrl($redirectUrl)) {

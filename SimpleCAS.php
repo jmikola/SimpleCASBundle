@@ -77,7 +77,7 @@ class SimpleCAS
         $this->session = $session;
         $this->adapter = $adapter;
 
-        if ($this->session->get(self::UID)) {
+        if ($this->session->get(static::UID)) {
             $this->authenticated = true;
         }
     }
@@ -119,7 +119,7 @@ class SimpleCAS
      */
     public function getUid()
     {
-        return $this->session->get(self::UID);
+        return $this->session->get(static::UID);
     }
 
     /**
@@ -133,7 +133,7 @@ class SimpleCAS
      */
     public function authenticate($uid)
     {
-        $this->session->set(self::UID, $uid);
+        $this->session->set(static::UID, $uid);
         $this->authenticated = true;
         return $this;
     }
@@ -145,7 +145,7 @@ class SimpleCAS
      */
     public function unauthenticate()
     {
-        $this->session->remove(self::UID);
+        $this->session->remove(static::UID);
         $this->authenticated = false;
         return $this;
     }
