@@ -13,12 +13,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class SimpleCASExtension extends Extension
 {
-    protected $resources = array(
-        'adapter' => 'adapter.xml',
-        'client'  => 'client.xml',
-        'helper'  => 'helper.xml',
-    );
-
     /**
      * Load the SimpleCAS adapter configuration.
      *
@@ -29,7 +23,7 @@ class SimpleCASExtension extends Extension
     {
         if (!$container->hasDefinition('adapter')) {
             $loader = new XmlFileLoader($container, __DIR__.'/../Resources/config');
-            $loader->load($this->resources['adapter']);
+            $loader->load('adapter.xml');
         }
 
         if (isset($config['name'])) {
@@ -39,8 +33,6 @@ class SimpleCASExtension extends Extension
                 $container->setParameter('simplecas.adapter.options', $config['options']);
             }
         }
-
-        return $container;
     }
 
     /**
@@ -53,7 +45,7 @@ class SimpleCASExtension extends Extension
     {
         if (!$container->hasDefinition('client')) {
             $loader = new XmlFileLoader($container, __DIR__.'/../Resources/config');
-            $loader->load($this->resources['client']);
+            $loader->load('client.xml');
         }
 
         foreach (array('hostname', 'uri', 'logout_service_redirect') as $key) {
@@ -69,8 +61,6 @@ class SimpleCASExtension extends Extension
                 }
             }
         }
-
-        return $container;
     }
 
     /**
@@ -83,10 +73,8 @@ class SimpleCASExtension extends Extension
     {
         if (!$container->hasDefinition('helper')) {
             $loader = new XmlFileLoader($container, __DIR__.'/../Resources/config');
-            $loader->load($this->resources['helper']);
+            $loader->load('helper.xml');
         }
-
-        return $container;
     }
 
     /**
