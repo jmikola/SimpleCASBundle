@@ -3,10 +3,12 @@
 namespace Bundle\SimpleCASBundle\Listener;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\Event;
+use Bundle\SimpleCASBundle\SimpleCAS;
 
 /**
  * TicketValidator listens to the core.request event and validates a CAS ticket
@@ -18,12 +20,33 @@ class TicketValidator
 {
     const TICKET = 'ticket';
 
-    protected $container;
+    /**
+     * @var Bundle\SimpleCASBundle\SimpleCAS
+     */
+    protected $simplecas;
+
+    /**
+     * @var Symfony\Component\HttpFoundation\Response
+     */
+    protected $response;
+
+    /**
+     * @var Symfony\Component\HttpKernel\Log\LoggerInterface
+     */
     protected $logger;
 
-    public function __construct(ContainerInterface $container, LoggerInterface $logger = null)
+    /**
+     * Construct a TicketValidator request listener.
+     *
+     * @param Bundle\SimpleCASBundle\SimpleCAS                 $simplecas
+     * @param Symfony\Component\HttpFoundation\Response        $response
+     * @param Symfony\Component\HttpKernel\Log\LoggerInterface $logger
+     * @return TicketValidator
+     */
+    public function __construct(SimpleCAS $simplecas, Response $response, LoggerInterface $logger = null)
     {
-        $this->container = $container;
+        $this->simplecas = $simplecas;
+        $this->response = $response;
         $this->logger = $logger;
     }
 
@@ -48,14 +71,14 @@ class TicketValidator
             return;
         }
 
-        if ($this->container->has('simplecas')) {
-            $simplecas = $this->container->get('simplecas');
+        if ($this->simplecas) {
             $request = $event->getParameter('request');
 
             if ($ticket = $request->query->get(static::TICKET)) {
-                if ($simplecas->validateTicket($ticket)) {
+                if ($this->simplecas->validateTicket($ticket)) {
+                    $this->simplecas->removeLoginRedirectUrl();
                     if (null !== $this->logger) {
-                        $this->logger->info(sprintf('Validated CAS ticket "%s" for principal identifier "%s"', $ticket, $simplecas->getUid()));
+                        $this->logger->info(sprintf('Validated CAS ticket "%s" for principal identifier "%s"', $ticket, $this->simplecas->getUid()));
                     }
                 } else {
                     if (null !== $this->logger) {
@@ -63,10 +86,9 @@ class TicketValidator
                     }
                 }
 
-                $response = $this->container->get('response');
-                $response->setStatusCode(302);
-                $response->headers->set('Location', $simplecas->getCurrentUrl());
-                $event->setReturnValue($response);
+                $this->response->setStatusCode(302);
+                $this->response->headers->set('Location', $this->simplecas->getCurrentUrl());
+                $event->setReturnValue($this->response);
                 return true;
             }
         }
