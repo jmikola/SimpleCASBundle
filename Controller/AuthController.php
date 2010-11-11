@@ -7,11 +7,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 abstract class AuthController extends Controller
 {
     /**
-     * Session attribute for stashing the login action's referrer
-     */
-    const REFERER = '__SIMPLECAS_LOGIN_REFERER';
-
-    /**
      * Returns the absolute service URL that CAS should redirect to after
      * logging out.  This will also be used for redirection after logging in,
      * if a referer is not available.
@@ -36,19 +31,20 @@ abstract class AuthController extends Controller
          * assume they wish to reauthenticate as another user.  Redirect the
          * user to the CAS logout URL, which should return to this login action.
          *
-         * The current referer will be saved if it is available.
+         * If a referer URL is available, it will be saved for post-login
+         * redirection.
          */
         if ($simplecas->isAuthenticated()) {
             $simplecas->unauthenticate();
 
             if ($referer = $this->getRefererUrl()) {
-                $this->getSession()->set(static::REFERER, $referer);
+                $simplecas->setLoginRedirectUrl($referer);
             }
 
             return $this->redirect($simplecas->getLogoutUrl());
         }
 
-        return $this->redirect($simplecas->getLoginUrl($this->getRedirectUrlOnce()));
+        return $this->redirect($simplecas->getLoginUrl($this->getLoginRedirectUrlOnce()));
     }
 
     public function logoutAction()
@@ -61,32 +57,46 @@ abstract class AuthController extends Controller
     /**
      * Get the post-login redirect URL.
      *
+     * If no redirect URL is saved in the session, this will default to the
+     * referer.  If either of those URL's is invalid (i.e. an internal CAS URL),
+     * the service URL will be returned.
+     *
+     * @see isValidRedirectUrl()
      * @return string
      */
-    protected function getRedirectUrl()
+    protected function getLoginRedirectUrl()
     {
-        $redirectUrl = $this->getSession()->get(static::REFERER, $this->getRefererUrl());
+        $loginRedirectUrl = $this->getSimpleCAS()->getLoginRedirectUrl($this->getRefererUrl());
 
         // Default to service URL if the referrer is invalid
-        if (! $this->isValidRedirectUrl($redirectUrl)) {
-            $redirectUrl = $this->getServiceUrl();
+        if (! $this->isValidRedirectUrl($loginRedirectUrl)) {
+            $loginRedirectUrl = $this->getServiceUrl();
         }
 
-        return $redirectUrl;
+        return $loginRedirectUrl;
     }
 
     /**
-     * Get the post-login redirect URL and remove it from the session if it was
-     * stashed.
+     * Get the post-login redirect URL and ensure it's removed from the session.
      *
      * @return string
      */
-    protected function getRedirectUrlOnce()
+    protected function getLoginRedirectUrlOnce()
     {
-        $redirectUrl = $this->getRedirectUrl();
-        $this->getSession()->remove(static::REFERER);
+        $loginRedirectUrl = $this->getLoginRedirectUrl();
+        $this->getSimpleCAS()->removeLoginRedirectUrl();
 
-        return $redirectUrl;
+        return $loginRedirectUrl;
+    }
+
+    /**
+     * Set the post-login redirect URL.
+     *
+     * @param string
+     */
+    protected function setLoginRedirectUrl($loginRedirectUrl)
+    {
+        $this->getSimpleCAS()->setLoginRedirectUrl($loginRedirectUrl);
     }
 
     /**

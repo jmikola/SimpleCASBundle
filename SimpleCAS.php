@@ -24,6 +24,11 @@ class SimpleCAS
     const UID = '__SIMPLECAS_UID';
 
     /**
+     * Session attribute for login action redirection.
+     */
+    const LOGIN_REDIRECT_URL = '__SIMPLECAS_LOGIN_REDIRECT_URL';
+
+    /**
      * CAS service protocol.
      *
      * @var \SimpleCAS_Protocol
@@ -269,7 +274,7 @@ class SimpleCAS
     /**
      * Returns the current URL without CAS-affecting parameters.
      *
-     * @return string url
+     * @return string
      */
     public function getCurrentUrl()
     {
@@ -283,6 +288,40 @@ class SimpleCAS
         );
         $uri = $this->request->getScheme() . '://' . $this->request->getHost() . $this->request->getRequestUri();
         return preg_replace(array_keys($replacements), array_values($replacements), $uri);
+    }
+
+    /**
+     * Gets the login redirect URL from the session.
+     *
+     * @param mixed $default
+     * @return string
+     */
+    public function getLoginRedirectUrl($default = null)
+    {
+        return $this->session->get(static::LOGIN_REDIRECT_URL, $default);
+    }
+
+    /**
+     * Sets the login redirect URL in the session.
+     *
+     * @param string $loginRedirectUrl
+     * @return SimpleCAS
+     */
+    public function setLoginRedirectUrl($loginRedirectUrl)
+    {
+        $this->session->set(static::LOGIN_REDIRECT_URL, $loginRedirectUrl);
+        return $this;
+    }
+
+    /**
+     * Remove the login redirect URL from the session.
+     *
+     * @return SimpleCAS
+     */
+    public function removeLoginRedirectUrl()
+    {
+        $this->session->remove(static::LOGIN_REDIRECT_URL);
+        return $this;
     }
 
     /**
