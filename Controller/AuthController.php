@@ -68,8 +68,8 @@ abstract class AuthController extends Controller
     {
         $loginRedirectUrl = $this->getSimpleCAS()->getLoginRedirectUrl($this->getRefererUrl());
 
-        // Default to service URL if the referrer is invalid
-        if (! $this->isValidRedirectUrl($loginRedirectUrl)) {
+        // Default to service URL if the redirect URL is empty or invalid
+        if (! ($loginRedirectUrl && $this->isValidRedirectUrl($loginRedirectUrl))) {
             $loginRedirectUrl = $this->getServiceUrl();
         }
 
