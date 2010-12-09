@@ -138,7 +138,7 @@ abstract class AuthController extends Controller
      */
     protected function getRequest()
     {
-        return $this['request'];
+        return $this->get('request');
     }
 
     /**
@@ -146,7 +146,7 @@ abstract class AuthController extends Controller
      */
     protected function getSession()
     {
-        return $this['session'];
+        return $this->get('session');
     }
 
     /**
@@ -154,6 +154,6 @@ abstract class AuthController extends Controller
      */
     protected function getSimpleCAS()
     {
-        return $this['simplecas'];
+        return $this->get('simplecas');
     }
 }
