@@ -67,12 +67,12 @@ class TicketValidator
      */
     public function handle(Event $event)
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getParameter('request_type')) {
+        if (HttpKernelInterface::MASTER_REQUEST !== $event->get('request_type')) {
             return;
         }
 
         if ($this->simplecas) {
-            $request = $event->getParameter('request');
+            $request = $event->get('request');
 
             if ($ticket = $request->query->get(static::TICKET)) {
                 if ($this->simplecas->validateTicket($ticket)) {
