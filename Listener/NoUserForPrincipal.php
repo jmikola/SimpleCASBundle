@@ -30,18 +30,12 @@ class NoUserForPrincipal
     /**
      * Registers a core.exception listener.
      *
-     * @param Symfony\Component\EventDispatcher\EventDispatcher $dispatcher
+     * @param EventDispatcher $dispatcher An EventDispatcher instance
+     * @param integer         $priority   The priority
      */
-    public function register(EventDispatcher $dispatcher)
+    public function register(EventDispatcher $dispatcher, $priority = 0)
     {
-        $listeners = $dispatcher->getListeners('core.exception');
-        $dispatcher->connect('core.exception', array($this, 'handle'));
-
-        // Reconnect all other core.exception listeners to ensure we're first
-        foreach ($listeners as $listener) {
-            $dispatcher->disconnect('core.exception', $listener);
-            $dispatcher->connect('core.exception', $listener);
-        }
+        $dispatcher->connect('core.exception', array($this, 'handle'), $priority);
     }
 
     /**
