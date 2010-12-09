@@ -52,12 +52,12 @@ class NoUserForPrincipal
      */
     public function handle(Event $event)
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getParameter('request_type')) {
+        if (HttpKernelInterface::MASTER_REQUEST !== $event->get('request_type')) {
             return;
         }
 
         if ($this->container->has('simplecas')) {
-            $exception = $event->getParameter('exception');
+            $exception = $event->get('exception');
 
             if ($exception instanceof NoUserForPrincipalException) {
                 if (null !== $this->logger) {
