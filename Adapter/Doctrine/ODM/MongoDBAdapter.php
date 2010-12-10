@@ -63,6 +63,8 @@ class MongoDBAdapter implements Adapter
      */
     public function getUserByPrincipal($principal)
     {
-        return $this->documentManager->findOne($this->documentName, array($this->principalField => $principal));
+        return $this->documentManager->getRepository($this->documentName)->findOneBy(array(
+            $this->principalField => $principal,
+        ));
     }
 }
