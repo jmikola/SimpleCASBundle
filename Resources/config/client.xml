@@ -17,27 +17,27 @@
 
     <services>
         <service id="simplecas" class="%simplecas.class%">
-            <argument type="service" id="simplecas.protocol" />
+            <argument type="service">
+                <service class="%simplecas.protocol.class%">
+                    <argument type="collection">
+                        <argument key="hostname">%simplecas.protocol.hostname%</argument>
+                        <argument key="uri">%simplecas.protocol.uri%</argument>
+                        <argument key="logoutServiceRedirect">%simplecas.protocol.logout_service_redirect%</argument>
+                    </argument>
+                    <call method="setRequest">
+                        <argument type="service">
+                            <service class="%simplecas.protocol.request.class%">
+                                <argument>null</argument>
+                                <argument>%simplecas.protocol.request.method%</argument>
+                                <argument>%simplecas.protocol.request.config%</argument>
+                            </service>
+                        </argument>
+                    </call>
+                </service>
+            </argument>
             <argument type="service" id="request" />
             <argument type="service" id="session" />
             <argument type="service" id="simplecas.adapter" on-invalid="ignore" />
-        </service>
-
-        <service id="simplecas.protocol" class="%simplecas.protocol.class%">
-            <argument type="collection">
-                <argument key="hostname">%simplecas.protocol.hostname%</argument>
-                <argument key="uri">%simplecas.protocol.uri%</argument>
-                <argument key="logoutServiceRedirect">%simplecas.protocol.logout_service_redirect%</argument>
-            </argument>
-            <call method="setRequest">
-                <argument type="service" id="simplecas.protocol.request" />
-            </call>
-        </service>
-
-        <service id="simplecas.protocol.request" class="%simplecas.protocol.request.class%">
-            <argument>null</argument>
-            <argument>%simplecas.protocol.request.method%</argument>
-            <argument>%simplecas.protocol.request.config%</argument>
         </service>
 
         <service id="simplecas.ticket_validator" class="%simplecas.ticket_validator.class%">
