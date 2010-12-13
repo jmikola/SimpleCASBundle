@@ -35,7 +35,7 @@
                     </call>
                 </service>
             </argument>
-            <argument type="service" id="request" />
+            <argument type="service" id="http_kernel" />
             <argument type="service" id="session" />
             <argument type="service" id="simplecas.adapter" on-invalid="ignore" />
         </service>

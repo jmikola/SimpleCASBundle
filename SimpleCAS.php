@@ -2,8 +2,8 @@
 
 namespace Bundle\SimpleCASBundle;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session;
+use Symfony\Component\HttpKernel\HttpKernel;
 use Bundle\SimpleCASBundle\Adapter\Adapter;
 use Bundle\SimpleCASBundle\Exception\NoUserForPrincipalException;
 
@@ -36,11 +36,11 @@ class SimpleCAS
     protected $protocol;
 
     /**
-     * HTTP request object.
+     * HTTP kernel object.
      *
-     * @var Symfony\Component\HttpFoundation\Request
+     * @var Symfony\Component\HttpKernel\HttpKernel
      */
-    protected $request;
+    protected $kernel;
 
     /**
      * User session service.
@@ -70,15 +70,15 @@ class SimpleCAS
      * will be considered authenticated.
      *
      * @param \SimpleCAS_Protocol                      $protocol
-     * @param Symfony\Component\HttpFoundation\Request $request
+     * @param Symfony\Component\HttpKernel\HttpKernel  $kernel
      * @param Symfony\Component\HttpFoundation\Session $session
-     * @param Bundle\SimpleCASBundle\Adapter\Adapter $adapter
+     * @param Bundle\SimpleCASBundle\Adapter\Adapter   $adapter
      * @return SimpleCAS
      */
-    public function __construct(\SimpleCAS_Protocol $protocol, Request $request, Session $session, Adapter $adapter = null)
+    public function __construct(\SimpleCAS_Protocol $protocol, HttpKernel $kernel, Session $session, Adapter $adapter = null)
     {
         $this->protocol = $protocol;
-        $this->request = $request;
+        $this->kernel = $kernel;
         $this->session = $session;
         $this->adapter = $adapter;
 
@@ -286,7 +286,9 @@ class SimpleCAS
             '/\?&/'             => '?',
             '/\?$/'             => '',
         );
+        $request = $this->kernel->getRequest();
         $uri = $this->request->getScheme() . '://' . $this->request->getHost() . $this->request->getRequestUri();
+
         return preg_replace(array_keys($replacements), array_values($replacements), $uri);
     }
 
