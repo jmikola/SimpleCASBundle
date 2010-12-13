@@ -287,9 +287,8 @@ class SimpleCAS
             '/\?$/'             => '',
         );
         $request = $this->kernel->getRequest();
-        $uri = $this->request->getScheme() . '://' . $this->request->getHost() . $this->request->getRequestUri();
 
-        return preg_replace(array_keys($replacements), array_values($replacements), $uri);
+        return preg_replace(array_keys($replacements), array_values($replacements), $request->getUri());
     }
 
     /**
