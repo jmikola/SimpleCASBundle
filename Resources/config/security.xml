@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://www.symfony-project.org/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.symfony-project.org/schema/dic/services http://www.symfony-project.org/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="security.authentication.simplecas_entry_point.class">Bundle\SimpleCASBundle\Security\EntryPoint\SimpleCASAuthenticationEntryPoint</parameter>
+        <parameter key="security.authentication.listener.simplecas.class">Bundle\SimpleCASBundle\Security\Firewall\SimpleCASAuthenticationListener</parameter>
+    </parameters>
+
+    <services>
+        <service id="security.authentication.simplecas_entry_point" class="%security.authentication.simplecas_entry_point.class%">
+            <argument type="service" id="foo" />
+        </service>
+
+        <service id="security.authentication.factory.cas" class="Bundle\SimpleCASBundle\DependencyInjection\Security\Factory\SimpleCASLoginFactory">
+            <tag name="security.listener.factory" />
+        </service>
+
+        <service id="security.authentication.listener.simplecas" class="%security.authentication.listener.simplecas.class%">
+            <argument type="service" id="security.context" />
+            <argument type="service" id="security.authentication.manager" />
+            <argument type="service" id="logger" on-invalid="null" />
+        </service>
+    </services>
+</container>
